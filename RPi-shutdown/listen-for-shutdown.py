@@ -9,13 +9,5 @@ gpio.setmode(gpio.BCM)
 gpio.setup(offPin, gpio.IN, pull_up_down=PUD_DOWN)
 gpio.wait_for_edge(offPin, gpio.FALLING)
 
-## Reemplazo temporal para probar el apagado
-# while True:
-#	cmd = raw_input("Input:")
-#	if cmd=="shutdown":
-#		break
-#	else:
-#		print(cmd)
-
-## Verdadero comando de apagado
+## Comando de apagado
 subprocess.call(['shutdown', '-h', 'now'], shell = False)
