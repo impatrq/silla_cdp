@@ -4,7 +4,7 @@ import subprocess
 
 offPin = 9
 
-## Codigo comentado porque no se puede probar pines en una RPi emulada.
+## Esperar por interrupción
 gpio.setmode(gpio.BCM)
 gpio.setup(offPin, gpio.IN, pull_up_down=PUD_DOWN)
 gpio.wait_for_edge(offPin, gpio.FALLING)
