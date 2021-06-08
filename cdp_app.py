@@ -1,7 +1,9 @@
 import RPi.GPIO as gpio
 import cdp_default as default
 
+# Variables de pines
 # Provisional...?
+pin_sensor = 32
 motor_pines = {
     'pin_adelante' : 29,
     'pin_atras' : 31,
@@ -20,7 +22,11 @@ def set_motorpin_output():
 
 # Establecer entradas y salidas
 gpio.setmode(gpio.BOARD)
+gpio.setup(pin_sensor, gpio.IN)
 set_motorpin_output()
+
+# Solo demostración
+default.return_to_default(motor_pines['pin_atras'], pin_sensor)
 
 # Espacio para resto del codigo...
 
