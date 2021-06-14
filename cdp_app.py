@@ -1,5 +1,7 @@
-import RPi.GPIO as gpio
+# import RPi.GPIO as gpio
 import cdp_default as default
+import cdp_gui as gui
+import threading
 
 # Variables de pines
 # Provisional...?
@@ -15,19 +17,25 @@ motor_pines = {
     'pin_enable_assheight' : 40
 }
 
-# Helper
 def set_motorpin_output():
-    for pin in motor_pines.values():
-        gpio.setup(pin, gpio.OUT) 
+        for pin in motor_pines.values():
+            # gpio.setup(pin, gpio.OUT)
+            pass
+
+def Say(text):
+    print(text)
+
+def StartDefault():
+    t = threading.Thread(target=default.return_to_default, args=(motor_pines['pin_atras'], pin_sensor))
+    t.start()
 
 # Establecer entradas y salidas
-gpio.setmode(gpio.BOARD)
-gpio.setup(pin_sensor, gpio.IN)
-set_motorpin_output()
+# gpio.setmode(gpio.BOARD)
+# gpio.setup(pin_sensor, gpio.IN)
+# set_motorpin_output()
 
-# Solo demostración
-default.return_to_default(motor_pines['pin_atras'], pin_sensor)
+if __name__ == "__main__":
+    gui_thread = threading.Thread(target = gui.AbrirVentana)
+    gui_thread.start()
 
-# Espacio para resto del codigo...
-
-gpio.cleanup()
+# gpio.cleanup()
