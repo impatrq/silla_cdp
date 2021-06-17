@@ -1,7 +1,7 @@
 # Modulo return_to_default helper para silla CDP
 import json
 import cdp_gui as gui
-# import RPi.GPIO as gpio
+import RPi.GPIO as gpio
 
 # No se si vá si o si, o si no
 # gpio.setmode(gpio.BOARD)
@@ -28,20 +28,19 @@ def return_to_default(pin_atras: int, pin_sensor: int):
         ciclos = dict_motores['Actuales'][motor][0]
 
         # Poner en alto los pines enable
-        # gpio.output(dict_motores[motor][1], True)
+        for pin in dict_motores['Actuales']["motor_ap"][1::]:
+            gpio.output(pin, True)
 
         # Hacer andar el motor hasta terminar los ciclos
         while ciclos > 0:
             gui.motor_values[motor] = True
-            # gpio.output(pin_atras, True)
-            # gpio.wait_for_edge(pin_sensor, gpio.FALLING)
-            # gpio.output(pin_atras, False)
-            input("Pasar ciclo")
-            print(ciclos)
+            gpio.output(pin_atras, True)
+            gpio.wait_for_edge(pin_sensor, gpio.FALLING)
+            gpio.output(pin_atras, False)
             ciclos -= 1
         
         # Poner en bajo todos los pines enable
-        # gpio.output(dict_motores[motor][1], False)
+        gpio.output(dict_motores[motor][1], False)
 
         gui.motor_values[motor] = False
 
@@ -55,11 +54,11 @@ def return_to_default(pin_atras: int, pin_sensor: int):
 if __name__ == "__main__":
     dict_motores = {
         "Actuales" : {
-            "motor_cabezal" : (1, 0),
-            "motor_ap" : (2, (0, 0)),
-            "motor_lumbar" : (3, 0),
-            "motor_assprof" : (4, 0),
-            "motor_assheight" : (3, 0)
+            "motor_cabezal" : [1, 33],
+            "motor_ap" : [2, 35, 37],
+            "motor_lumbar" : [3, 36],
+            "motor_assprof" : [4, 38],
+            "motor_assheight" : [3, 40]
         }
     }
 

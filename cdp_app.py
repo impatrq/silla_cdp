@@ -1,4 +1,4 @@
-# import RPi.GPIO as gpio
+import RPi.GPIO as gpio
 import cdp_default as default
 import cdp_gui as gui
 import threading
@@ -19,7 +19,7 @@ motor_pines = {
 
 def set_motorpin_output():
         for pin in motor_pines.values():
-            # gpio.setup(pin, gpio.OUT)
+            gpio.setup(pin, gpio.OUT)
             pass
 
 def Say(text):
@@ -30,12 +30,13 @@ def StartDefault():
     t.start()
 
 # Establecer entradas y salidas
-# gpio.setmode(gpio.BOARD)
-# gpio.setup(pin_sensor, gpio.IN)
-# set_motorpin_output()
+gpio.setmode(gpio.BOARD)
+gpio.setup(pin_sensor, gpio.IN)
+set_motorpin_output()
 
 if __name__ == "__main__":
     gui_thread = threading.Thread(target = gui.AbrirVentana)
     gui_thread.start()
 
-# gpio.cleanup()
+# Ver donde acomodar a futuro
+gpio.cleanup()
