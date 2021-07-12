@@ -1,5 +1,5 @@
 import RPi.GPIO as gpio
-import cdp_default as default
+import cdp_helper as helper
 import cdp_gui as gui
 import threading
 
@@ -26,7 +26,7 @@ def Say(text):
     print(text)
 
 def StartDefault():
-    t = threading.Thread(target=default.return_to_default, args=(motor_pines['pin_atras'], pin_sensor))
+    t = threading.Thread(target=helper.return_to_default, args=(motor_pines['pin_atras'], pin_sensor))
     t.start()
 
 # Establecer entradas y salidas
