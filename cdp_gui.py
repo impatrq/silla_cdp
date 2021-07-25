@@ -1,5 +1,5 @@
 import PySimpleGUI as sg;
-import cdp_app as app
+import cdp_main as main
 
 motorbool1 = False
 
@@ -33,10 +33,10 @@ def AbrirVentana():
             break
 
         if event == "btnDefault":
-            app.StartDefault()
+            main.StartDefault()
 
         if event == "btnTest":
-            app.Say("hola")
+            main.Say("hola")
 
         window["txtMotorCabezal"].update("Motor Cabezal: " + str(motor_values["motor_cabezal"]))
         window["txtMotorAp"].update("Motor Apoyabrazos: " + str(motor_values["motor_ap"]))
