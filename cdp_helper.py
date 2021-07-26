@@ -1,10 +1,13 @@
-# Modulo return_to_default helper para silla CDP
+# Modulo con funciones auxiliares para silla CDP
 import json
 import cdp_gui as gui
-# import RPi.GPIO as gpio
+from machine import Pin
 
-# No se si vá si o si, o si no
-# gpio.setmode(gpio.BOARD)
+# Versión trucha de wait_for_edge (quizás provisional)
+def wait_for_interrupt(pin: Pin):
+    while True:
+        if pin.value() == 1:
+            break
 
 # Función para obtener los datos de los motores
 def load_json() -> dict:
@@ -20,33 +23,34 @@ def save_json(data: dict):
         outfile.close()
 
 # Función para mover los motores
-def return_to_default(pin_atras: int, pin_sensor: int):
+def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
     dict_motores = load_json()
 
     for motor in dict_motores['Actuales']:
         # Sacar posicion del motor
-        ciclos = dict_motores['Actuales'][motor][0]
+        ciclos = dict_motores['Actuales'][motor]
 
         # Poner en alto los pines enable
-        for pin in dict_motores['Actuales']["motor_ap"][1::]:
-            # gpio.output(pin, True)
-            continue
+        for pin in motor_pines[motor]:
+            pin.value(1)
 
         # Hacer andar el motor hasta terminar los ciclos
         while ciclos > 0:
             gui.motor_values[motor] = True
-            # gpio.output(pin_atras, True)
-            # gpio.wait_for_edge(pin_sensor, gpio.FALLING)
-            # gpio.output(pin_atras, False)
+            pin_atras.value(1)
+            wait_for_interrupt(pin_sensor)
+            pin_atras.value(0)
             ciclos -= 1
         
         # Poner en bajo todos los pines enable
-        # gpio.output(dict_motores[motor][1], False)
+        for pin in motor_pines[motor]:
+            pin.value(0)
 
+        # Indicarle al modulo GUI que el motor ya no se está moviendo
         gui.motor_values[motor] = False
 
         # Guardar nueva posicion de este motor
-        dict_motores['Actuales'][motor][0] = ciclos
+        dict_motores['Actuales'][motor] = ciclos
     
     # Guardar nueva posicion de los motores
     save_json(dict_motores)
@@ -55,11 +59,11 @@ def return_to_default(pin_atras: int, pin_sensor: int):
 if __name__ == "__main__":
     dict_motores = {
         "Actuales" : {
-            "motor_cabezal" : [1, 33],
-            "motor_ap" : [2, 35, 37],
-            "motor_lumbar" : [3, 36],
-            "motor_assprof" : [4, 38],
-            "motor_assheight" : [3, 40]
+            "cabezal" : 1,
+            "apbrazo" : 2,
+            "lumbar" : 3,
+            "assprof" : 4,
+            "assheight" : 3
         }
     }
 
