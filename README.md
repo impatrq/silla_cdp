@@ -1,17 +1,10 @@
-<center>
-
-# Silla CDP
-
-</center>
-
+<h1 align="center">Silla CDP</h1>
 <p align="center">
-<img width=200 src="media/cdp-logo-v1.png" style="border-radius:50%; border: 3px solid #fff">
-<center>
+<img width=200 src="media/cdp-logo-v2.png">
 
-|[Página Web](#silla-cdp)|[Contacto](#contacto)|
+|[Página Web](#silla-cdp)|[Contáctenos](#contacto)|
 |---|---|
 
-</center>
 </p>
 <details open>
 <summary><b>Lista de contenidos:</b></summary>
@@ -21,10 +14,8 @@
 <li><a href="#contacto">Contacto.</a></li>
 </ol>
 </details>
-<br>
 
 ## Información del proyecto
----
 **Silla CDP**, o *Silla Correctora de Postura* es un proyecto diseñado para **realizar** y **agilizar** la acción de **mantener una buena posición al encontrarse sentado**, en un contexto en el que pasar largos periodos de tiempo continuo haciéndolo sea una ocurrencia ordinaria.
 Por lo tanto, presenta **características ergonómicas** que puedan otorgar **comodidad** y a la vez, **cuidado de la postura** del usuario.
 
@@ -37,13 +28,11 @@ Uno de los **principales fuertes** de la silla es su capacidad para **acomodarse
 - Interfaz de usuario facil de interactuar, ya que está integrada con una pantalla táctil.
 
 ## Licencia
----
 Este proyecto está distribuido bajo la licencia MIT.
 
 Para más informacion puede consultar [LICENSE](./LICENSE) o también este [enlace a Wikipedia](https://es.wikipedia.org/wiki/Licencia_MIT).
 
 ## Contacto
----
 Puede contactar con nosotros mediante los siguientes correos electrónicos:
 
 **Desarrolladores de Software**:
