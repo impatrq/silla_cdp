@@ -9,9 +9,8 @@ A continuación nombramos las librerías de las que hacemos uso y de donde provi
 </details>
 
 ## ili9341 y xpt2046
----
-### **Autor**: rdagger [(perfil de Github)](https://github.com/rdagger)
-### **Fuente**: [micropython-ili9341 (repositorio)](https://github.com/rdagger/micropython-ili9341)
+#### **Autor**: rdagger [(perfil de Github)](https://github.com/rdagger)
+#### **Fuente**: [micropython-ili9341 (repositorio)](https://github.com/rdagger/micropython-ili9341)
 ---
 Esta librería nos facilita la configuración y programación del táctil xpt2046 y la pantalla LCD TFT ili9341, proporcionando métodos para dibujar en pantalla y para sensar los toques.
 
