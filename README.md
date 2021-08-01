@@ -1,10 +1,12 @@
 <h1 align="center">Silla CDP</h1>
 <p align="center">
 <img width=200 src="media/cdp-logo-v2.png">
+<div align="center">
 
 |[Página Web](#silla-cdp)|[Contáctenos](#contacto)|
 |---|---|
 
+</div>
 </p>
 <details open>
 <summary><b>Lista de contenidos:</b></summary>
