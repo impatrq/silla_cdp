@@ -1,7 +1,18 @@
 # Modulo con funciones auxiliares para silla CDP
 import json
 import cdp_gui as gui
-from machine import Pin
+from machine import Pin, ADC
+
+# Macros
+ADC_THRESHOLD = 512
+
+# Función para obtener una lectura de ADC y transformarla a estado lógico.
+def adc_check_threshold(pin: ADC) -> bool:
+    # Establecer rango máximo como 3.3V y valores de 0 a 1023
+    pin.atten(ADC.ATTN_11DB)
+    pin.width(ADC.WIDTH_10BIT)
+
+    return pin.read() > ADC_THRESHOLD
 
 # Versión trucha de wait_for_edge (quizás provisional)
 def wait_for_interrupt(pin: Pin):
