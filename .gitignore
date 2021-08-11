@@ -3,3 +3,11 @@
 
 # Archivos generados por el programa
 motor_data.json
+
+# Archivos generados por micropy
+# Stubs
+.micropy
+micropy.json
+# Configuración de VSCode
+.vscode
+.pylintrc
