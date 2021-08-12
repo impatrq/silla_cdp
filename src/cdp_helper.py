@@ -1,7 +1,7 @@
 # Modulo con funciones auxiliares para silla CDP
 import json
-import cdp_gui as gui
 from machine import Pin
+import cdp_gui as gui
 
 # Versión trucha de wait_for_edge (quizás provisional)
 def wait_for_interrupt(pin: Pin):
@@ -57,7 +57,7 @@ def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
 
 # Para pruebas
 if __name__ == "__main__":
-    dict_motores = {
+    dict_prueba = {
         "Actuales" : {
             "cabezal" : 1,
             "apbrazo" : 2,
@@ -67,4 +67,4 @@ if __name__ == "__main__":
         }
     }
 
-    save_json(dict_motores)
+    save_json(dict_prueba)
