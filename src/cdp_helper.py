@@ -68,7 +68,7 @@ def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
 
 # Para pruebas
 if __name__ == "__main__":
-    dict_motores = {
+    dict_prueba = {
         "Actuales" : {
             "cabezal" : 1,
             "apbrazo" : 2,
@@ -78,4 +78,4 @@ if __name__ == "__main__":
         }
     }
 
-    save_json(dict_motores)
+    save_json(dict_prueba)
