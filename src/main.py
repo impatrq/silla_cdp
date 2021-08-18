@@ -12,6 +12,18 @@ available_threads = {}
 pin_sensor = Pin(32, Pin.IN, Pin.PULL_UP)
 pin_off = Pin(9, Pin.IN, Pin.PULL_UP)       # Establecido como el que usabamos anteriormente (#TODO: cambiar pines)
 
+#TODO: Reemplazar numero de pines por los correctos.
+sensor_pines = {
+    'adelante' : [1, False],
+    'atras' : [1, False],
+    'cabezal' : [1, False],
+    'apbrazo' : [1, False],
+    'lumbar' : [1, False],
+    'assdepth' : [1, False],
+    'assheight' : [1, False]
+}
+
+#TODO: Arreglar pines de motores (cantidad de pines y de motores)
 # Solucion temporal hasta verificar una posibilidad de placa puente-h
 motor_pines = {
     'adelante' : [29],
