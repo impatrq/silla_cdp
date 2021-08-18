@@ -14,6 +14,16 @@ def adc_check_threshold(pin: ADC) -> bool:
 
     return pin.read() > ADC_THRESHOLD
 
+def adc_update_all_states(sensor_pines: dict, v_update: bool = False):
+    # Poner verdadero o falso en el dict de sensores segun si pasan el umbral o no.
+    for pin in sensor_pines.values():
+        pin[1] = adc_check_threshold(pin[0])
+    
+    # Si se le pasa este parámetro, llamar a la funcion para actualizar la pantalla.
+    if v_update:
+        #TODO: Provisional hasta tener la verdadera funcion
+        gui.update_sensor_state()
+
 # Versión trucha de wait_for_edge (quizás provisional)
 def wait_for_interrupt(pin: Pin):
     while True:
