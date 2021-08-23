@@ -33,6 +33,9 @@ def save_json(data: dict):
         json.dump(data, outfile, indent = 4)
         outfile.close()
 
+def start_calibration():
+    pass
+
 # Función para mover los motores
 def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
     dict_motores = load_json()
