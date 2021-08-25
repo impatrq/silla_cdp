@@ -34,7 +34,17 @@ def save_json(data: dict):
         outfile.close()
 
 def start_calibration():
-    pass
+    # Mostrar instruccion en pantalla
+    # Esperar por presion en varilla
+    # Por cada motor...
+    #   Mostrar instruccion
+    #   Encender motor
+    #   Contar pulsos/vueltas del motor
+    #   Esperar respuesta del sensor
+    #   Detener motor
+    #   Guardar en dict con posiciones
+    # Devolver dict con posiciones
+    return
 
 # Función para mover los motores
 def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
