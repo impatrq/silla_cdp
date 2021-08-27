@@ -1,6 +1,9 @@
 import PySimpleGUI as sg;
 import cdp_main as main
 
+def show_calib_instructions(which: str):
+    print(which)
+
 motorbool1 = False
 
 motor_values = {

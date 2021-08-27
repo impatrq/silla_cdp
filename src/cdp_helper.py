@@ -33,18 +33,43 @@ def save_json(data: dict):
         json.dump(data, outfile, indent = 4)
         outfile.close()
 
-def start_calibration():
-    # Mostrar instruccion en pantalla
+def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
+    # Diccionario con nuevas posiciones
+    new_pos = {}
+    
+    # Mostrar instruccion en pantalla (placeholder)
+    gui.show_calib_instructions('bar')
+
     # Esperar por presion en varilla
+    wait_for_interrupt(sensor_pines['bar'])
+
     # Por cada motor...
-    #   Mostrar instruccion
-    #   Encender motor
-    #   Contar pulsos/vueltas del motor
-    #   Esperar respuesta del sensor
-    #   Detener motor
-    #   Guardar en dict con posiciones
+    for motor, pines in motor_pines.items():
+        # Variable donde guardar la posicion
+        pos = 0
+        
+        # Mostrar instruccion
+        gui.show_calib_instructions(motor)
+
+        # Encender motor
+        for pin in pines:
+            pin.value(1)
+
+        # Hasta que no este en la posicion correcta...
+        while not adc_check_threshold(sensor_pines[motor]):
+            # Contar pulsos/vueltas del motor
+            if turn_counter.value() == 1:
+                pos += 1
+
+        # Detener motor al llegar a la posicion correcta
+        for pin in pines:
+            pin.value(0)
+
+        # Guardar en dict con posiciones
+        new_pos[motor] = pos
+
     # Devolver dict con posiciones
-    return
+    return new_pos
 
 # Función para mover los motores
 def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
