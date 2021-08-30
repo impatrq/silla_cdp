@@ -14,13 +14,13 @@ pin_off = Pin(9, Pin.IN, Pin.PULL_UP)       # Establecido como el que usabamos a
 
 #TODO: Reemplazar numero de pines por los correctos.
 sensor_pines = {
-    'adelante' : [1, False],
-    'atras' : [1, False],
-    'cabezal' : [1, False],
-    'apbrazo' : [1, False],
-    'lumbar' : [1, False],
-    'assdepth' : [1, False],
-    'assheight' : [1, False]
+    'adelante' : [1, False, 0, 1023],
+    'atras' : [1, False, 0, 1023],
+    'cabezal' : [1, False, 0, 1023],
+    'apbrazo' : [1, False, 0, 1023],
+    'lumbar' : [1, False, 0, 1023],
+    'assdepth' : [1, False, 0, 1023],
+    'assheight' : [1, False, 0, 1023]
 }
 
 #TODO: Arreglar pines de motores (cantidad de pines y de motores)
