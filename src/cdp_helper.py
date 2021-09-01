@@ -45,6 +45,9 @@ def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
 
     # Por cada motor...
     for motor, pines in motor_pines.items():
+        # Variable de lista con valores
+        pin_sensor_list = sensor_pines[motor]
+
         # Variable donde guardar la posicion
         pos = 0
         
@@ -56,7 +59,7 @@ def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
             pin.value(1)
 
         # Hasta que no este en la posicion correcta...
-        while not adc_check_threshold(sensor_pines[motor]):
+        while not adc_check_threshold(pin_sensor_list[0], *pin_sensor_list[2:]):
             # Contar pulsos/vueltas del motor
             if turn_counter.value() == 1:
                 pos += 1
