@@ -14,6 +14,7 @@ pin_off = Pin(9, Pin.IN, Pin.PULL_UP)       # Establecido como el que usabamos a
 
 #TODO: Reemplazar numero de pines por los correctos.
 sensor_pines = {
+    'bar' : [1, False, 0, 1023],
     'cabezal' : [1, False, 0, 1023],
     'apbrazo' : [1, False, 0, 1023],
     'lumbar' : [1, False, 0, 1023],
