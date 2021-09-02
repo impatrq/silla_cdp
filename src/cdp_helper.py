@@ -46,7 +46,7 @@ def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
     gui.show_calib_instructions('bar')
 
     # Esperar por presion en varilla
-    wait_for_interrupt_adc(sensor_pines['bar'], *sensor_pines['bar'][2:])
+    wait_for_interrupt_adc(sensor_pines['bar'][0], *sensor_pines['bar'][2:])
 
     # Por cada motor...
     for motor, pines in motor_pines.items():
