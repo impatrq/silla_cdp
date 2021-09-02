@@ -1,6 +1,9 @@
 import PySimpleGUI as sg;
 import cdp_main as main
 
+def update_sensor_state():
+    pass
+
 motorbool1 = False
 
 motor_values = {

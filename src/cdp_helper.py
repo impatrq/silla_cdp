@@ -7,12 +7,29 @@ from machine import Pin, ADC
 ADC_THRESHOLD = 512
 
 # Función para obtener una lectura de ADC y transformarla a estado lógico.
-def adc_check_threshold(pin: ADC) -> bool:
+def adc_check_threshold(pin: ADC, minim: int = 0, maxim: int = 1023) -> bool:
     # Establecer rango máximo como 3.3V y valores de 0 a 1023
     pin.atten(ADC.ATTN_11DB)
     pin.width(ADC.WIDTH_10BIT)
 
-    return pin.read() > ADC_THRESHOLD
+    return maxim > pin.read() > minim
+
+def adc_update_all_states(sensor_pines: dict, v_update: bool = False) -> bool:
+    well_sit_cond = len(sensor_pines)
+    i = 0
+
+    # Poner verdadero o falso en el dict de sensores segun si pasan el umbral o no.
+    for pin in sensor_pines.values():
+        val = adc_check_threshold(pin[0], minim=ADC_THRESHOLD)
+        pin[1] = val
+        i += int(val)
+    
+    # Si se le pasa este parámetro, llamar a la funcion para actualizar la pantalla.
+    if v_update:
+        #TODO: Provisional hasta tener la verdadera funcion
+        gui.update_sensor_state()
+
+    return True if (i >= well_sit_cond) else False
 
 # Versión trucha de wait_for_edge (quizás provisional)
 def wait_for_interrupt(pin: Pin):
