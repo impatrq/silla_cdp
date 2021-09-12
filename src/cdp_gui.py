@@ -4,6 +4,9 @@ import cdp_main as main
 def show_calib_instructions(which: str):
     print(which)
 
+def update_sensor_state():
+    pass
+
 motorbool1 = False
 
 motor_values = {
