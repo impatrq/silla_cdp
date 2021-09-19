@@ -37,6 +37,11 @@ def wait_for_interrupt(pin: Pin):
         if pin.value() == 1:
             break
 
+def wait_for_interrupt_adc(pin: ADC, minim: int, maxim: int):
+    while True:
+        if adc_check_threshold(pin, minim, maxim) == 1:
+            break
+
 # Función para obtener los datos de los motores
 def load_json() -> dict:
     with open("motor_data.json", "r") as file:
@@ -49,6 +54,47 @@ def save_json(data: dict):
     with open("motor_data.json", "w") as outfile:
         json.dump(data, outfile, indent = 4)
         outfile.close()
+
+def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
+    # Diccionario con nuevas posiciones
+    new_pos = {}
+    
+    # Mostrar instruccion en pantalla (placeholder)
+    gui.show_calib_instructions('bar')
+
+    # Esperar por presion en varilla
+    wait_for_interrupt_adc(sensor_pines['bar'][0], *sensor_pines['bar'][2:])
+
+    # Por cada motor...
+    for motor, pines in motor_pines.items():
+        # Variable de lista con valores
+        pin_sensor_list = sensor_pines[motor]
+
+        # Variable donde guardar la posicion
+        pos = 0
+        
+        # Mostrar instruccion
+        gui.show_calib_instructions(motor)
+
+        # Encender motor
+        for pin in pines:
+            pin.value(1)
+
+        # Hasta que no este en la posicion correcta...
+        while not adc_check_threshold(pin_sensor_list[0], *pin_sensor_list[2:]):
+            # Contar pulsos/vueltas del motor
+            if turn_counter.value() == 1:
+                pos += 1
+
+        # Detener motor al llegar a la posicion correcta
+        for pin in pines:
+            pin.value(0)
+
+        # Guardar en dict con posiciones
+        new_pos[motor] = pos
+
+    # Devolver dict con posiciones
+    return new_pos
 
 # Función para mover los motores
 def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
