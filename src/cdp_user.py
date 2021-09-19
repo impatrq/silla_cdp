@@ -26,17 +26,25 @@ class Usuario():
         """
             Reescribir el archivo `motor_data.json` para agregar la configuracion de este usuario.
         """
-        # Cargar json
-        with open("motor_data.json", "r") as file:
-            d = json.load(file)
-        
-        # Agregar posiciones de este usuario
-        d[self.nombre] = self.dict_posicion
-        d["Actuales"] = self.dict_posicion
+        try:
+            # Cargar json
+            with open("motor_data.json", "r") as file:
+                if not file.readline() == "":
+                    d = json.load(file)
+                else:
+                    d = {}
+            
+            # Agregar posiciones de este usuario
+            d[self.nombre] = self.dict_posicion
+            d["Actuales"] = self.dict_posicion
 
-        # Escribir en el json
-        with open("motor_data.json", "w") as file:
-            json.dump(d, file)
+            # Escribir en el json
+            with open("motor_data.json", "w") as file:
+                json.dump(d, file)
+        except OSError:
+            with open("motor_data.json", "w"):
+                pass
+            return self.add_config_to_json()
 
     def remove_config_from_json(self):
         pass
