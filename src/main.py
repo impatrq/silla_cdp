@@ -5,6 +5,7 @@ import machine
 from machine import Pin, ADC
 import cdp_helper as helper
 import cdp_gui as gui
+from cdp_user import Usuario
 
 # Lista de hilos
 available_threads = {}
@@ -45,16 +46,40 @@ def load_config_from_file_global():
             _global_config = json.load(file)
         return _global_config
     except OSError:
-        print("cdp_config.json is missing. Creating a new one...")
+        print("cdp_config.json is missing. Creating a new default one...")
         with open("settings/cdp_config.json", "w") as file:
             c = {
                 "first_time_open" : True
             }
             json.dump(c, file)
+        return load_config_from_file_global()
 
 
 def load_users_from_file_global():
-    pass
+    new_list = []
+
+    try:
+        with open("settings/motor_data.json", "r") as file:
+            data = json.load(file)
+        for user, config in data.items():
+            if user == "Actuales":
+                continue
+            new_list.append(Usuario(user, config))
+        return new_list
+    except OSError:
+        print("motor_data.json is missing. Creating a new default one...")
+        with open("settings/motor_data.json", "w") as file:
+            c = {
+                "Actuales" : {
+                    "cabezal" : 0,
+                    "apbrazo" : 0,
+                    "lumbar" : 0,
+                    "assprof" : 0,
+                    "assheight" : 0
+                }
+            }
+            json.dump(c, file)
+        return load_users_from_file_global()
 
 def set_motorpin_output():
     for value in motor_pines.values():
@@ -93,7 +118,7 @@ def main():
 if __name__ == "__main__":
     # Cargar datos desde archivos (se hace desde aca para modificar la variable global)
     _global_config = load_config_from_file_global()
-    load_users_from_file_global()
+    _users_list = load_users_from_file_global()
 
     main()
 
