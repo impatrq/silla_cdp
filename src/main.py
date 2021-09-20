@@ -25,8 +25,6 @@ sensor_pines = {
 #TODO: Arreglar pines de motores (cantidad de pines y de motores)
 # Solucion temporal hasta verificar una posibilidad de placa puente-h
 motor_pines = {
-    'adelante' : [29],
-    'atras' : [31],
     'cabezal' : [33],
     'apbrazo' : [35, 37],
     'lumbar' : [36],
