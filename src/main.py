@@ -115,6 +115,14 @@ def main():
     set_motorpin_output()
     set_sensorpin_input()
 
+    if _global_config["first_time_open"]:
+        # TODO: Bienvenida por la GUI + primera calibracion
+        print("Bienvenido a Silla CDP")
+        _global_config["first_time_open"] = False
+    # TODO: Carga de pantalla inicial por la GUI
+    print("Pantalla de usuarios")
+    # TODO: Salto a estado IDLE o WAITING
+
 if __name__ == "__main__":
     # Cargar datos desde archivos (se hace desde aca para modificar la variable global)
     _global_config = load_config_from_file_global()
