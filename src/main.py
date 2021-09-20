@@ -1,7 +1,7 @@
 # main.py
 import _thread as thr
 import machine
-from machine import Pin
+from machine import Pin, ADC
 import cdp_helper as helper
 import cdp_gui as gui
 
@@ -38,6 +38,14 @@ def set_motorpin_output():
     for value in motor_pines.values():
         for index, pin in enumerate(value):
             value[index] = Pin(pin, Pin.OUT, Pin.PULL_DOWN, 0)
+
+def set_sensorpin_input():
+    for value in sensor_pines.values():
+        for index, pin in enumerate(value):
+            if index == 0:
+                value[index] = ADC(Pin(pin, Pin.IN, Pin.PULL_DOWN))
+                value[index].atten(ADC.ATTN_11DB)    # Rango maximo 3.3V
+                value[index].width(ADC.WIDTH_10BIT)  # Lectura 0-1023
 
 def listen_for_shutdown(pin: Pin):
     # Dependiendo de como salgan las pruebas del reset, esta condicion podría moverse al principio del programa.

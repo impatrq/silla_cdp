@@ -8,10 +8,6 @@ ADC_THRESHOLD = 512
 
 # Función para obtener una lectura de ADC y transformarla a estado lógico.
 def adc_check_threshold(pin: ADC, minim: int = 0, maxim: int = 1023) -> bool:
-    # Establecer rango máximo como 3.3V y valores de 0 a 1023
-    pin.atten(ADC.ATTN_11DB)
-    pin.width(ADC.WIDTH_10BIT)
-
     return maxim > pin.read() > minim
 
 def adc_update_all_states(sensor_pines: dict, v_update: bool = False) -> bool:
