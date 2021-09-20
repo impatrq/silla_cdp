@@ -4,6 +4,7 @@ import machine
 from machine import Pin, ADC
 import cdp_helper as helper
 import cdp_gui as gui
+import json as json
 
 # Lista de hilos
 available_threads = {}
@@ -39,7 +40,18 @@ _global_config = {}
 _users_list = []
 
 def load_config_from_file_global():
-    pass
+    try:
+        with open("settings/cdp_config.json", "r") as file:
+            _global_config = json.load(file)
+        return _global_config
+    except OSError:
+        print("cdp_config.json is missing. Creating a new one...")
+        with open("src/settings/cdp_config.json", "w") as file:
+            c = {
+                "first_time_open" : True
+            }
+            json.dump(c, file)
+
 
 def load_users_from_file_global():
     pass
@@ -74,15 +86,15 @@ def StartDefault():
         print("[Err #001] Error al intentar iniciar un hilo.\n" + e)
 
 def main():
-    # Cargar datos desde archivos
-    load_config_from_file_global()
-    load_users_from_file_global()
-
     # Establecer entradas y salidas
     set_motorpin_output()
     set_sensorpin_input()
 
 if __name__ == "__main__":
+    # Cargar datos desde archivos (se hace desde aca para modificar la variable global)
+    _global_config = load_config_from_file_global()
+    load_users_from_file_global()
+
     main()
 
     # Poner interrupción en el pin de apagado
