@@ -41,14 +41,14 @@ def wait_for_interrupt_adc(pin: ADC, minim: int, maxim: int):
 
 # Función para obtener los datos de los motores
 def load_json() -> dict:
-    with open("motor_data.json", "r") as file:
+    with open("settings/motor_data.json", "r") as file:
         dict_motores = json.load(file)
         file.close()
     return dict_motores
 
 # Funcion para guardar los datos de los motores
 def save_json(data: dict):
-    with open("motor_data.json", "w") as outfile:
+    with open("settings/motor_data.json", "w") as outfile:
         json.dump(data, outfile, indent = 4)
         outfile.close()
 

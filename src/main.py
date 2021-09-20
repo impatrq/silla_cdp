@@ -1,10 +1,10 @@
 # main.py
 import _thread as thr
+import ujson as json
 import machine
 from machine import Pin, ADC
 import cdp_helper as helper
 import cdp_gui as gui
-import json as json
 
 # Lista de hilos
 available_threads = {}
@@ -46,7 +46,7 @@ def load_config_from_file_global():
         return _global_config
     except OSError:
         print("cdp_config.json is missing. Creating a new one...")
-        with open("src/settings/cdp_config.json", "w") as file:
+        with open("settings/cdp_config.json", "w") as file:
             c = {
                 "first_time_open" : True
             }

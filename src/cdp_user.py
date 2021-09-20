@@ -11,6 +11,8 @@ class Usuario():
         self.nombre = nombre
         self.dict_posicion = dict_posicion
 
+        self.json_path = "settings/motor_data.json"
+
         self.add_config_to_json()
 
     def edit(self):
@@ -28,7 +30,7 @@ class Usuario():
         """
         try:
             # Cargar json
-            with open("motor_data.json", "r") as file:
+            with open(self.json_path, "r") as file:
                 try:
                     d = json.load(file)
                 except:
@@ -39,10 +41,10 @@ class Usuario():
             d["Actuales"] = self.dict_posicion
 
             # Escribir en el json
-            with open("motor_data.json", "w") as file:
+            with open(self.json_path, "w") as file:
                 json.dump(d, file)
         except OSError:
-            with open("motor_data.json", "w"):
+            with open(self.json_path, "w"):
                 pass
             return self.add_config_to_json()
 
