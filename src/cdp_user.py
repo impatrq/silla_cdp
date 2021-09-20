@@ -29,9 +29,9 @@ class Usuario():
         try:
             # Cargar json
             with open("motor_data.json", "r") as file:
-                if not file.readline() == "":
+                try:
                     d = json.load(file)
-                else:
+                except:
                     d = {}
             
             # Agregar posiciones de este usuario
