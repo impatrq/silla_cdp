@@ -1,7 +1,8 @@
 # Modulo con funciones auxiliares para silla CDP
 import json
-import cdp_gui as gui
 from machine import Pin, ADC
+from utime import sleep_ms
+import cdp_gui as gui
 
 # Macros
 ADC_THRESHOLD = 512
@@ -124,6 +125,34 @@ def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
     
     # Guardar nueva posicion de los motores
     save_json(dict_motores)
+
+def setup_motor_config(new_config: dict, motor_pines: dict, turn_counter: Pin):
+    # Cargar JSON para despues poder guardar las nuevas posiciones
+    d = load_json()
+    
+    for motor, ciclos in new_config.items():
+        # Contador de ciclos
+        count = 0
+
+        # Prender el/los motor/es
+        for pin in motor_pines[motor]:
+            pin.value(1)
+
+        # Contar vueltas hasta llegar a los ciclos necesarios
+        while count < ciclos:
+            if turn_counter.value() == 1:
+                count += 1
+            sleep_ms(100)
+
+        # Apagar los motores
+        for pin in motor_pines[motor]:
+            pin.value(0)
+
+    # Cambiar las posiciones actuales por las nuevas en el JSON
+    d["Actuales"] = new_config
+
+    # Re-escribir el JSON
+    save_json(d)
 
 # Para pruebas
 if __name__ == "__main__":
