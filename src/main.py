@@ -32,6 +32,18 @@ motor_pines = {
     'assheight' : [40]
 }
 
+# Aca se guardan los datos obtenidos del archivo "cdp_config.json"
+_global_config = {}
+
+# Aca se guardan las instancias de clase Usuario obtenidas desde motor_data.json
+_users_list = []
+
+def load_config_from_file_global():
+    pass
+
+def load_users_from_file_global():
+    pass
+
 def set_motorpin_output():
     for value in motor_pines.values():
         for index, pin in enumerate(value):
@@ -61,15 +73,23 @@ def StartDefault():
     except thr.error as e:
         print("[Err #001] Error al intentar iniciar un hilo.\n" + e)
 
-# Establecer entradas y salidas
-set_motorpin_output()
+def main():
+    # Cargar datos desde archivos
+    load_config_from_file_global()
+    load_users_from_file_global()
+
+    # Establecer entradas y salidas
+    set_motorpin_output()
+    set_sensorpin_input()
 
 if __name__ == "__main__":
+    main()
+
     # Poner interrupción en el pin de apagado
-    pin_off.irq(handler = listen_for_shutdown, trigger = Pin.IRQ_FALLING, wake = machine.DEEPSLEEP or machine.SLEEP)
+    # pin_off.irq(handler = listen_for_shutdown, trigger = Pin.IRQ_FALLING, wake = machine.DEEPSLEEP or machine.SLEEP)
 
     # Correr modulo GUI en la primera pantalla
-    available_threads['gui_thread'] = thr.start_new_thread(gui.AbrirVentana, ())
+    # available_threads['gui_thread'] = thr.start_new_thread(gui.AbrirVentana, ())
 
     # Los hilos no corren si se termina el programa principal (implementar luego detener hilos desde este script)
     while True:
