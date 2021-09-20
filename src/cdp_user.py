@@ -48,3 +48,6 @@ class Usuario():
 
     def remove_config_from_json(self):
         pass
+
+    def __repr__(self):
+        return f"Usuario '{self.nombre}'.\nConfig:\n{self.dict_posicion}"
