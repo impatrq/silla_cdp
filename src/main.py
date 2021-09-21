@@ -1,14 +1,18 @@
 # main.py
 import _thread as thr
-import ujson as json
+import json as json
 import machine
 from machine import Pin, ADC
 import cdp_helper as helper
-import cdp_gui as gui
+#import cdp_gui as gui
 from cdp_user import Usuario
+from cdp_fsm import StateMachine
 
 # Lista de hilos
 available_threads = {}
+
+# Estados para la FSM
+STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
 
 # Variables de pines
 pin_sensor = Pin(32, Pin.IN, Pin.PULL_UP)
@@ -94,14 +98,14 @@ def set_sensorpin_input():
                 value[index].atten(ADC.ATTN_11DB)    # Rango maximo 3.3V
                 value[index].width(ADC.WIDTH_10BIT)  # Lectura 0-1023
 
-def listen_for_shutdown(pin: Pin):
-    # Dependiendo de como salgan las pruebas del reset, esta condicion podría moverse al principio del programa.
-    if machine.wake_reason() == machine.PIN_WAKE:
-        # TODO: Aca iría el codigo luego de despertar.
-        return
+# def listen_for_shutdown(pin: Pin):
+#     # Dependiendo de como salgan las pruebas del reset, esta condicion podría moverse al principio del programa.
+#     if machine.wake_reason() == machine.PIN_WAKE:
+#         # TODO: Aca iría el codigo luego de despertar.
+#         return
 
-    # TODO: Acá iría el codigo previo a la suspensión...
-    machine.lightsleep()
+#     # TODO: Acá iría el codigo previo a la suspensión...
+#     machine.lightsleep()
 
 def StartDefault():
     try:
@@ -110,10 +114,14 @@ def StartDefault():
     except thr.error as e:
         print("[Err #001] Error al intentar iniciar un hilo.\n" + e)
 
+def wait_for_action():
+    fsm.State = IDLE
+    print(".")
+
 def main():
     # Establecer entradas y salidas
-    set_motorpin_output()
-    set_sensorpin_input()
+    #set_motorpin_output()
+    #set_sensorpin_input()
 
     if _global_config["first_time_open"]:
         # TODO: Bienvenida por la GUI + primera calibracion
@@ -121,14 +129,24 @@ def main():
         _global_config["first_time_open"] = False
     # TODO: Carga de pantalla inicial por la GUI
     print("Pantalla de usuarios")
-    # TODO: Salto a estado IDLE o WAITING
+
+    fsm.State = IDLE
+
+# Instancia de la FSM
+fsm = StateMachine((STARTING, main))
 
 if __name__ == "__main__":
     # Cargar datos desde archivos (se hace desde aca para modificar la variable global)
     _global_config = load_config_from_file_global()
     _users_list = load_users_from_file_global()
 
-    main()
+    # Agregar estados a la FSM
+    fsm.add_states([
+        (IDLE, wait_for_action)
+    ])
+
+    # Arrancar la FSM
+    fsm.start()
 
     # Poner interrupción en el pin de apagado
     # pin_off.irq(handler = listen_for_shutdown, trigger = Pin.IRQ_FALLING, wake = machine.DEEPSLEEP or machine.SLEEP)
