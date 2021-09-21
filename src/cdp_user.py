@@ -1,4 +1,5 @@
 import ujson as json
+from cdp_helper import setup_motor_config
 
 class Usuario():
     instance_number = 1
@@ -21,8 +22,8 @@ class Usuario():
     def remove(self):
         pass
 
-    def setup_config(self):
-        pass
+    def setup_config(self, motor_pines: dict, turn_counter):
+        setup_motor_config(self.dict_posicion, motor_pines, turn_counter)
 
     def add_config_to_json(self):
         """
