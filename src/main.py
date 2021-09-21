@@ -116,6 +116,7 @@ def StartDefault():
 
 def wait_for_action():
     fsm.State = IDLE
+    # TODO: interacción con la GUI
     print(".")
 
 def main():
@@ -130,6 +131,7 @@ def main():
     # TODO: Carga de pantalla inicial por la GUI
     print("Pantalla de usuarios")
 
+    # Cambiar de estado a espera
     fsm.State = IDLE
 
 # Instancia de la FSM
