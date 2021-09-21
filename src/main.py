@@ -115,9 +115,9 @@ def StartDefault():
         print("[Err #001] Error al intentar iniciar un hilo.\n" + e)
 
 def wait_for_action():
-    fsm.State = IDLE
     # TODO: interacción con la GUI
     print(".")
+    fsm.next_state()
 
 def main():
     # Establecer entradas y salidas
