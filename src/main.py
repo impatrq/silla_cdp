@@ -95,6 +95,13 @@ def set_sensorpin_input():
                 value[index].atten(ADC.ATTN_11DB)    # Rango maximo 3.3V
                 value[index].width(ADC.WIDTH_10BIT)  # Lectura 0-1023
 
+def set_encoder_pins():
+    for index, pin in enumerate(pines_encoder):
+        if index == 0:
+            pines_encoder[index] = Pin(pin, Pin.IN, Pin.PULL_DOWN)
+        else:
+            pines_encoder[index] = Pin(pin, Pin.OUT)
+
 def wait_for_action():
     # TODO: interacción con la GUI
     print(".")
@@ -104,6 +111,7 @@ def main():
     # Establecer entradas y salidas
     set_motorpin_output()
     set_sensorpin_input()
+    set_encoder_pins()
 
     if _global_config["first_time_open"]:
         # TODO: Bienvenida por la GUI + primera calibracion
