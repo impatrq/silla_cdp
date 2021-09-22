@@ -1,15 +1,11 @@
 # main.py
 import _thread as thr
 import json as json
-import machine
 from machine import Pin, ADC
 import cdp_helper as helper
 #import cdp_gui as gui
 from cdp_user import Usuario
 from cdp_fsm import StateMachine
-
-# Lista de hilos
-available_threads = {}
 
 # Estados para la FSM
 STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
@@ -98,22 +94,6 @@ def set_sensorpin_input():
                 value[index].atten(ADC.ATTN_11DB)    # Rango maximo 3.3V
                 value[index].width(ADC.WIDTH_10BIT)  # Lectura 0-1023
 
-# def listen_for_shutdown(pin: Pin):
-#     # Dependiendo de como salgan las pruebas del reset, esta condicion podría moverse al principio del programa.
-#     if machine.wake_reason() == machine.PIN_WAKE:
-#         # TODO: Aca iría el codigo luego de despertar.
-#         return
-
-#     # TODO: Acá iría el codigo previo a la suspensión...
-#     machine.lightsleep()
-
-def StartDefault():
-    try:
-        # Probablemente cambie en el futuro para albergar mas de un helper thread a la vez
-        available_threads['helper_thread'] = thr.start_new_thread(helper.return_to_default, (motor_pines['atras'], pin_sensor))
-    except thr.error as e:
-        print("[Err #001] Error al intentar iniciar un hilo.\n" + e)
-
 def wait_for_action():
     # TODO: interacción con la GUI
     print(".")
@@ -149,15 +129,3 @@ if __name__ == "__main__":
 
     # Arrancar la FSM
     fsm.start()
-
-    # Poner interrupción en el pin de apagado
-    # pin_off.irq(handler = listen_for_shutdown, trigger = Pin.IRQ_FALLING, wake = machine.DEEPSLEEP or machine.SLEEP)
-
-    # Correr modulo GUI en la primera pantalla
-    # available_threads['gui_thread'] = thr.start_new_thread(gui.AbrirVentana, ())
-
-    # Los hilos no corren si se termina el programa principal (implementar luego detener hilos desde este script)
-    while True:
-        i = input()
-        if i == "stop":
-            break
