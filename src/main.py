@@ -11,8 +11,7 @@ from cdp_fsm import StateMachine
 STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
 
 # Variables de pines
-pin_sensor = Pin(32, Pin.IN, Pin.PULL_UP)
-pin_off = Pin(9, Pin.IN, Pin.PULL_UP)       # Establecido como el que usabamos anteriormente (#TODO: cambiar pines)
+pines_encoder = [22, 1, 3, 21]
 
 #TODO: Reemplazar numero de pines por los correctos.
 sensor_pines = {
@@ -24,14 +23,16 @@ sensor_pines = {
     'assheight' : [1, False, 0, 1023]
 }
 
-#TODO: Arreglar pines de motores (cantidad de pines y de motores)
-# Solucion temporal hasta verificar una posibilidad de placa puente-h
+# Pines de los motores
 motor_pines = {
-    'cabezal' : [33],
-    'apbrazo' : [35, 37],
-    'lumbar' : [36],
-    'assdepth' : [38],
-    'assheight' : [40]
+    'cabezal_adelante' : [32],
+    'apbrazo_adelante' : [33, 25],
+    'assdepth_adelante' : [14],
+    'assheight_adelante' : [0],
+    'cabezal_atras' : [33],
+    'apbrazo_atras' : [25, 27],
+    'assdepth_atras' : [12],
+    'assheight_atras' : [15]
 }
 
 # Aca se guardan los datos obtenidos del archivo "cdp_config.json"
@@ -101,8 +102,8 @@ def wait_for_action():
 
 def main():
     # Establecer entradas y salidas
-    #set_motorpin_output()
-    #set_sensorpin_input()
+    set_motorpin_output()
+    set_sensorpin_input()
 
     if _global_config["first_time_open"]:
         # TODO: Bienvenida por la GUI + primera calibracion
