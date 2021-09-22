@@ -4,9 +4,6 @@ from machine import Pin, ADC
 from utime import sleep_ms
 import cdp_gui as gui
 
-# Macros
-ADC_THRESHOLD = 512
-
 # Función para obtener una lectura de ADC y transformarla a estado lógico.
 def adc_check_threshold(pin: ADC, minim: int = 0, maxim: int = 1023) -> bool:
     return maxim > pin.read() > minim
@@ -17,7 +14,7 @@ def adc_update_all_states(sensor_pines: dict, v_update: bool = False) -> bool:
 
     # Poner verdadero o falso en el dict de sensores segun si pasan el umbral o no.
     for pin in sensor_pines.values():
-        val = adc_check_threshold(pin[0], minim=ADC_THRESHOLD)
+        val = adc_check_threshold(pin[0], minim=pin[2], maxim=pin[3])
         pin[1] = val
         i += int(val)
     
@@ -43,14 +40,12 @@ def wait_for_interrupt_adc(pin: ADC, minim: int, maxim: int):
 def load_json() -> dict:
     with open("settings/motor_data.json", "r") as file:
         dict_motores = json.load(file)
-        file.close()
     return dict_motores
 
 # Funcion para guardar los datos de los motores
 def save_json(data: dict):
     with open("settings/motor_data.json", "w") as outfile:
-        json.dump(data, outfile, indent = 4)
-        outfile.close()
+        json.dump(data, outfile)
 
 def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
     # Diccionario con nuevas posiciones
