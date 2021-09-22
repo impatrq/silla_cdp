@@ -1,17 +1,14 @@
 # Modulo con funciones auxiliares para silla CDP
 import json
-import cdp_gui as gui
 from machine import Pin, ADC
+from utime import sleep_ms
+import cdp_gui as gui
 
 # Macros
 ADC_THRESHOLD = 512
 
 # Función para obtener una lectura de ADC y transformarla a estado lógico.
 def adc_check_threshold(pin: ADC, minim: int = 0, maxim: int = 1023) -> bool:
-    # Establecer rango máximo como 3.3V y valores de 0 a 1023
-    pin.atten(ADC.ATTN_11DB)
-    pin.width(ADC.WIDTH_10BIT)
-
     return maxim > pin.read() > minim
 
 def adc_update_all_states(sensor_pines: dict, v_update: bool = False) -> bool:
@@ -44,14 +41,14 @@ def wait_for_interrupt_adc(pin: ADC, minim: int, maxim: int):
 
 # Función para obtener los datos de los motores
 def load_json() -> dict:
-    with open("motor_data.json", "r") as file:
+    with open("settings/motor_data.json", "r") as file:
         dict_motores = json.load(file)
         file.close()
     return dict_motores
 
 # Funcion para guardar los datos de los motores
 def save_json(data: dict):
-    with open("motor_data.json", "w") as outfile:
+    with open("settings/motor_data.json", "w") as outfile:
         json.dump(data, outfile, indent = 4)
         outfile.close()
 
@@ -128,6 +125,34 @@ def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
     
     # Guardar nueva posicion de los motores
     save_json(dict_motores)
+
+def setup_motor_config(new_config: dict, motor_pines: dict, turn_counter: Pin):
+    # Cargar JSON para despues poder guardar las nuevas posiciones
+    d = load_json()
+    
+    for motor, ciclos in new_config.items():
+        # Contador de ciclos
+        count = 0
+
+        # Prender el/los motor/es
+        for pin in motor_pines[motor]:
+            pin.value(1)
+
+        # Contar vueltas hasta llegar a los ciclos necesarios
+        while count < ciclos:
+            if turn_counter.value() == 1:
+                count += 1
+            sleep_ms(100)
+
+        # Apagar los motores
+        for pin in motor_pines[motor]:
+            pin.value(0)
+
+    # Cambiar las posiciones actuales por las nuevas en el JSON
+    d["Actuales"] = new_config
+
+    # Re-escribir el JSON
+    save_json(d)
 
 # Para pruebas
 if __name__ == "__main__":
