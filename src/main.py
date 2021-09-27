@@ -13,6 +13,8 @@ STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
 # Variables de pines
 pines_encoder = [22, 1, 3, 21]
 
+#TODO: Agregar pines ultrasonido e instancia de clase (discutir por entradas disponibles)
+
 #TODO: Reemplazar numero de pines por los correctos.
 sensor_pines = {
     'bar' : [1, False, 0, 1023],
