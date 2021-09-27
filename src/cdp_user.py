@@ -18,7 +18,7 @@ class Usuario():
 
     def edit(self):
         pass
-    
+
     def remove(self):
         pass
 
@@ -34,9 +34,9 @@ class Usuario():
             with open(self.json_path, "r") as file:
                 try:
                     d = json.load(file)
-                except:
+                except ValueError:
                     d = {}
-            
+
             # Agregar posiciones de este usuario
             d[self.nombre] = self.dict_posicion
             d["Actuales"] = self.dict_posicion
