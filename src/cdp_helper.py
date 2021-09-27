@@ -17,7 +17,7 @@ def adc_update_all_states(sensor_pines: dict, v_update: bool = False) -> bool:
         val = adc_check_threshold(pin[0], minim=pin[2], maxim=pin[3])
         pin[1] = val
         i += int(val)
-    
+
     # Si se le pasa este parámetro, llamar a la funcion para actualizar la pantalla.
     if v_update:
         #TODO: Provisional hasta tener la verdadera funcion
@@ -50,7 +50,7 @@ def save_json(data: dict):
 def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
     # Diccionario con nuevas posiciones
     new_pos = {}
-    
+
     # Mostrar instruccion en pantalla (placeholder)
     gui.show_calib_instructions('bar')
 
@@ -64,7 +64,7 @@ def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
 
         # Variable donde guardar la posicion
         pos = 0
-        
+
         # Mostrar instruccion
         gui.show_calib_instructions(motor)
 
@@ -102,29 +102,25 @@ def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
 
         # Hacer andar el motor hasta terminar los ciclos
         while ciclos > 0:
-            gui.motor_values[motor] = True
             pin_atras.value(1)
             wait_for_interrupt(pin_sensor)
             pin_atras.value(0)
             ciclos -= 1
-        
+
         # Poner en bajo todos los pines enable
         for pin in motor_pines[motor]:
             pin.value(0)
 
-        # Indicarle al modulo GUI que el motor ya no se está moviendo
-        gui.motor_values[motor] = False
-
         # Guardar nueva posicion de este motor
         dict_motores['Actuales'][motor] = ciclos
-    
+
     # Guardar nueva posicion de los motores
     save_json(dict_motores)
 
 def setup_motor_config(new_config: dict, motor_pines: dict, turn_counter: Pin):
     # Cargar JSON para despues poder guardar las nuevas posiciones
     d = load_json()
-    
+
     for motor, ciclos in new_config.items():
         # Contador de ciclos
         count = 0
