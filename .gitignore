@@ -12,3 +12,6 @@ micropy.json
 # Configuración de VSCode
 .vscode
 .pylintrc
+
+# Archivos de Atmel Studio
+/ATMega-UART/.vs
