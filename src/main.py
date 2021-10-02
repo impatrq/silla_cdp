@@ -1,11 +1,10 @@
 # main.py
-import _thread as thr
-import json as json
+#import _thread as thr
+import ujson as json
 from machine import Pin, ADC
 import cdp_helper as helper
 #import cdp_gui as gui
-from cdp_user import Usuario
-from cdp_fsm import StateMachine
+from cdp_classes import Usuario, StateMachine
 
 # Estados para la FSM
 STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
