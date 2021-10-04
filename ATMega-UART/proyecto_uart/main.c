@@ -66,7 +66,8 @@ int main(void)
 	ASK ask_state = 0;
 	
 	// Inicializar PORTB
-	DDRB = 0x00;
+	DDRB = 0x02;	// PB1 como salida
+	DDRD = 0x60;	// PD5, PD6 como salida
 	
 	// Inicializar UART (baudrate = 9600, single)
 	uart_init(9600, 0);
@@ -139,6 +140,32 @@ int main(void)
 			}
 			
 			// Enviar print_buffer
+			uart_send_string(print_buffer);
+		}
+		else if (strncmp((char*)reading, "mux", 3) == 0) {
+			// Meter en ask_value los ultimos 3 bytes
+			sprintf((char*)ask_value, (char*)reading + 3);
+			
+			// Limpiar print_buffer
+			memset(print_buffer, 0, sizeof(print_buffer));
+			
+			unsigned int i = 0;
+			
+			// Convertir y setear
+			// MSB - Bit 2
+			i = ask_value[0] - '0';
+			PORTB ^= (-i ^ PORTB) & (1 << PINB1);
+			
+			// Bit 1
+			i = ask_value[1] - '0';
+			PORTD ^= (-i ^ PORTD) & (1 << PIND6);
+			
+			// LSB - Bit 1
+			i = ask_value[2] - '0';
+			PORTD ^= (-i ^ PORTD) & (1 << PIND5);
+			
+			// Enviar mensaje de confirmación
+			sprintf((char*)print_buffer, "ADDRSET");
 			uart_send_string(print_buffer);
 		}
     }
