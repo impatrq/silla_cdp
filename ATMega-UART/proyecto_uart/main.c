@@ -121,6 +121,7 @@ int main(void)
 					sprintf((char*)print_buffer, "%u", convert);
 				break;
 				
+				// Devolver datos de joystick en formato "joy_x-joy_y-joy_sw"
 				case SWITCH:
 					uint8_t data[12] = {0};
 					uint16_t convert2 = 0;
