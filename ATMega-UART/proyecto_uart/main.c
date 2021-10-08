@@ -17,14 +17,15 @@ typedef enum {
 	BAR,
 	LUM1,
 	LUM2,
-	LUM3,
-	LUM4,
 	ASS1,
 	ASS2,
-	APB	
+	APB,
+	JOY_X,
+	JOY_Y,
+	SW
 } ASK;
 
-// ¿Para facilitar la lectura?
+// ï¿½Para facilitar la lectura?
 ASK ask_value_to_enum(char* ask_value) {
 	if (strncmp(ask_value, "bar", 3) == 0) {
 		return BAR;
@@ -35,12 +36,6 @@ ASK ask_value_to_enum(char* ask_value) {
 	else if (strncmp(ask_value, "lu2", 3) == 0) {
 		return LUM2;
 	}
-	else if (strncmp(ask_value, "lu3", 3) == 0) {
-		return LUM3;
-	}
-	else if (strncmp(ask_value, "lu4", 3) == 0) {
-		return LUM4;
-	}
 	else if (strncmp(ask_value, "as1", 3) == 0) {
 		return ASS1;
 	}
@@ -49,6 +44,15 @@ ASK ask_value_to_enum(char* ask_value) {
 	}
 	else if (strncmp(ask_value, "apb", 3) == 0) {
 		return APB;
+	}
+	else if (strncmp(ask_value, "jox", 3) == 0) {
+		return JOY_X;
+	}
+	else if (strncmp(ask_value, "joy", 3) == 0) {
+		return JOY_Y;
+	}
+	else if (strncmp(ask_value, "swi", 3) == 0) {
+		return SW;
 	}
 	else {
 		return NONE;
@@ -102,6 +106,7 @@ int main(void)
 				// Estos dos son pines digitales, vienen de una compuerta AND.
 				case BAR: pin_value = (PINB & (1 << PINB2)) >> PINB2; sprintf((char*)print_buffer, "%d", pin_value); break;
 				case APB: pin_value = (PINB & (1 << PINB3)) >> PINB3; sprintf((char*)print_buffer, "%d", pin_value); break;
+				case SW: pin_value = (PINB & (1 << PINB4)) >> PINB4; sprintf((char*)print_buffer, "%d", pin_value); break;
 				
 				// Los que siguen son de entradas analogicas, vienen directo de los piezoelectricos.
 				case LUM1: 
@@ -114,22 +119,22 @@ int main(void)
 					convert = adc_convert();
 					sprintf((char*)print_buffer, "%u", convert);
 				break;
-				case LUM3:
+				case ASS1:
 					adc_pin_select(ADC2_PIN);
 					convert = adc_convert();
 					sprintf((char*)print_buffer, "%u", convert);
 				break;
-				case LUM4:
+				case ASS2:
 					adc_pin_select(ADC3_PIN);
 					convert = adc_convert();
 					sprintf((char*)print_buffer, "%u", convert);
 				break;
-				case ASS1:
+				case JOY_X:
 					adc_pin_select(ADC4_PIN);
 					convert = adc_convert();
 					sprintf((char*)print_buffer, "%u", convert);
 				break;
-				case ASS2:
+				case JOY_Y:
 					adc_pin_select(ADC5_PIN);
 					convert = adc_convert();
 					sprintf((char*)print_buffer, "%u", convert);
@@ -164,7 +169,7 @@ int main(void)
 			i = ask_value[2] - '0';
 			PORTD ^= (-i ^ PORTD) & (1 << PIND5);
 			
-			// Enviar mensaje de confirmación
+			// Enviar mensaje de confirmaciï¿½n
 			sprintf((char*)print_buffer, "ADDRSET");
 			uart_send_string(print_buffer);
 		}
