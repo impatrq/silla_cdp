@@ -122,8 +122,7 @@ int main(void)
 				break;
 				
 				// Devolver datos de joystick en formato "joy_x-joy_y-joy_sw"
-				case SWITCH:
-					uint8_t data[12] = {0};
+				case SWITCH: ;
 					uint16_t convert2 = 0;
 
 					adc_pin_select(ADC4_PIN);
