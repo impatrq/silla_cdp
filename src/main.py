@@ -1,9 +1,11 @@
 # main.py
+import lvgl as lv
 import ujson as json
 from machine import Pin
 #import cdp_helper as helper
 #import cdp_gui as gui
 from cdp_classes import Usuario, StateMachine, Sensor_US, ControlUART
+from ili9XXX import ili9341
 
 # ==================== VARIABLES GLOBALES==================== #
 
@@ -42,6 +44,10 @@ _global_config = {}
 
 # Aca se guardan las instancias de clase Usuario obtenidas desde motor_data.json
 _users_list = []
+
+# Inicializar pantalla LCD
+lv.init()
+disp = ili9341(mosi=23, miso=19, clk=18, dc=21, cs=5, rst=22, power=-1, backlight=-1)
 
 # ==================== FUNCIONES ==================== #
 
