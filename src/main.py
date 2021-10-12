@@ -1,7 +1,7 @@
 # main.py
 import ujson as json
-from machine import Pin, ADC
-import cdp_helper as helper
+from machine import Pin
+#import cdp_helper as helper
 #import cdp_gui as gui
 from cdp_classes import Usuario, StateMachine, Sensor_US, ControlUART
 
