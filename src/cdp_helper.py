@@ -1,21 +1,41 @@
 # Modulo con funciones auxiliares para silla CDP
 import json
-from machine import Pin, ADC
+from machine import Pin
 from utime import sleep_ms
 import cdp_gui as gui
+from cdp_classes import ControlUART
 
-# Función para obtener una lectura de ADC y transformarla a estado lógico.
-def adc_check_threshold(pin: ADC, minim: int = 0, maxim: int = 1023) -> bool:
-    return maxim > pin.read() > minim
+# ==================== FUNCIONES DE ADC / PINES ==================== #
 
-def adc_update_all_states(sensor_pines: dict, v_update: bool = False) -> bool:
-    well_sit_cond = len(sensor_pines)
+def sensor_check_range(comm: ControlUART, which: str, minim: int = 0, maxim: int = 1023) -> bool:
+    """
+        Pregunta por el sensor 'which' mediante 'comm', luego lo recibe, y si es un numero,
+        indica si esta dentro del rango especificado.
+
+        Args:
+        `comm`: Objeto de `ControlUART` utilizado para el pedido.
+        `which`: string de longitud 3 con el identificador del sensor.
+        `minim`: cota inferior no infima del rango.
+        `maxim`: cota superior no maxima del rango.
+    """
+    if len(which) != 3:
+        print("Longitud incorrecta. Evitando chequeo.")
+        return False
+    read = comm.send_and_receive(which)
+    try:
+        read = int(read)
+        return maxim > read > minim
+    except ValueError():
+        print(read)
+        return False
+
+def adc_update_all_states(comm: ControlUART, sensors: list, v_update: bool = False) -> bool:
+    well_sit_cond = len(sensors)
     i = 0
 
-    # Poner verdadero o falso en el dict de sensores segun si pasan el umbral o no.
-    for pin in sensor_pines.values():
-        val = adc_check_threshold(pin[0], minim=pin[2], maxim=pin[3])
-        pin[1] = val
+    # Formato(sensors) => [ident, minim, maxim]
+    for sensor in sensors:
+        val = sensor_check_range(comm, sensor[0], minim=sensor[1], maxim=sensor[2])
         i += int(val)
 
     # Si se le pasa este parámetro, llamar a la funcion para actualizar la pantalla.
@@ -23,18 +43,21 @@ def adc_update_all_states(sensor_pines: dict, v_update: bool = False) -> bool:
         #TODO: Provisional hasta tener la verdadera funcion
         gui.update_sensor_state()
 
-    return True if (i >= well_sit_cond) else False
+    return i >= well_sit_cond
 
-# Versión trucha de wait_for_edge (quizás provisional)
+def wait_for_interrupt_adc(comm: ControlUART, which: str):
+    while True:
+        if sensor_check_range(comm, which):
+            break
+        sleep_ms(100)
+
+# Versión trucha de wait_for_edge de RPi.GPIO
 def wait_for_interrupt(pin: Pin):
     while True:
         if pin.value() == 1:
             break
 
-def wait_for_interrupt_adc(pin: ADC, minim: int, maxim: int):
-    while True:
-        if adc_check_threshold(pin, minim, maxim) == 1:
-            break
+# ==================== FUNCIONES DE MOTORES ==================== #
 
 # Función para obtener los datos de los motores
 def load_json() -> dict:
