@@ -71,6 +71,26 @@ def wait_for_interrupt_sensor(comm: ControlUART, which: str):
 
 # ==================== ENCODER ==================== #
 
+def set_select_encoder(comm: ControlUART, value: str):
+    """
+        Envía el comando para establecer el SELECT del multiplexor. 
+        NOTA: no tiene en cuenta si el valor enviado no es un valor binario.
+
+        Args:
+        `comm`: Objeto de `ControlUART` utilizado para el pedido.
+        `value`: string de longitud 3 con el valor en binario que se desea establecer.
+    """
+    try:
+        if len(value) != 3:
+            print("Longitud incorrecta al establecer seleccion MUX")
+            return False
+        int(value)
+        r = comm.send_and_receive(f"mux{value}")
+        return r == "ADDRSET"
+    except ValueError:
+        print("El valor no es un numero al establecer seleccion MUX")
+        return False
+
 # ==================== PINES ==================== #
 
 # Versión trucha de wait_for_edge de RPi.GPIO
