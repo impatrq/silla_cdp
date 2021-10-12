@@ -1,5 +1,4 @@
 # main.py
-#import _thread as thr
 import ujson as json
 from machine import Pin, ADC
 import cdp_helper as helper
@@ -10,7 +9,7 @@ from cdp_classes import Usuario, StateMachine
 STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
 
 # Variables de pines
-pines_encoder = [22, 1, 3, 21]
+pin_encoder = 35
 
 #TODO: Agregar pines ultrasonido e instancia de clase (discutir por entradas disponibles)
 
