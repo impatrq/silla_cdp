@@ -3,7 +3,9 @@ import ujson as json
 from machine import Pin, ADC
 import cdp_helper as helper
 #import cdp_gui as gui
-from cdp_classes import Usuario, StateMachine, Sensor_US
+from cdp_classes import Usuario, StateMachine, Sensor_US, ControlUART
+
+# ==================== VARIABLES GLOBALES==================== #
 
 # Estados para la FSM
 STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
@@ -14,15 +16,8 @@ pin_encoder = 35
 # Sensor ultrasonido
 sensor_us = Sensor_US(16, 36)
 
-#TODO: Reemplazar numero de pines por los correctos.
-sensor_pines = {
-    'bar' : [1, False, 0, 1023],
-    'cabezal' : [1, False, 0, 1023],
-    'apbrazo' : [1, False, 0, 1023],
-    'lumbar' : [1, False, 0, 1023],
-    'assdepth' : [1, False, 0, 1023],
-    'assheight' : [1, False, 0, 1023]
-}
+# Comunicacion UART con ATMega328P
+uart = ControlUART(9600, 17, 34)
 
 # Pines de los motores
 motor_pines = {
@@ -41,6 +36,8 @@ _global_config = {}
 
 # Aca se guardan las instancias de clase Usuario obtenidas desde motor_data.json
 _users_list = []
+
+# ==================== FUNCIONES ==================== #
 
 def load_config_from_file_global():
     try:
