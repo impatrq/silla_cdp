@@ -3,7 +3,9 @@ import json
 from machine import Pin
 from utime import sleep_ms
 import cdp_gui as gui
-from cdp_classes import ControlUART
+from cdp_classes import ControlUART, Sensor_US
+
+MAX_POS = 0
 
 # ==================== SENSORES ==================== #
 
@@ -112,43 +114,98 @@ def save_json(data: dict):
     with open("settings/motor_data.json", "w") as outfile:
         json.dump(data, outfile)
 
-def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
+def start_calibration(comm: ControlUART, sensor_us: Sensor_US, motor_pines: dict, turn_counter: Pin):
+    """
+        Realiza el proceso de calibración. Devuelve el diccionario de posiciones obtenido.
+
+        Args:
+        `comm`: Objeto de ControlUART para comunicacion con sensores.
+        `sensor_us`: Objeto de Sensor_US para posicionamiento del cabezal.
+        `motor_pines`: Diccionario con los pines de cada motor (generalmente motor_pines["Adelante"]).
+        `turn_counter`: Pin donde entra la salida del multiplexor.
+    """
     # Diccionario con nuevas posiciones
     new_pos = {}
+    pos = 0
 
-    # Mostrar instruccion en pantalla (placeholder)
+    # Esperar por confirmacion de inicio
     gui.show_calib_instructions('bar')
+    wait_for_interrupt_sensor(comm, 'bar')
 
-    # Esperar por presion en varilla
-    wait_for_interrupt_adc(sensor_pines['bar'][0], *sensor_pines['bar'][2:])
+    # Procedimiento para altura de la silla
+    gui.show_calib_instructions('assheight')
+    comm.send_bytes('mux000')
+    motor_pines['assheight'].value(1)
+    while True:
+        as1 = sensor_check_range(comm, 'as1')
+        as2 = sensor_check_range(comm, 'as2')
+        if turn_counter.value() == 1:
+            pos += 1
+        if (as1 or as2) or pos >= MAX_POS:
+            break
+    motor_pines['assheight'].value(0)
+    new_pos['assheight'] = pos
+    pos = 0
 
-    # Por cada motor...
-    for motor, pines in motor_pines.items():
-        # Variable de lista con valores
-        pin_sensor_list = sensor_pines[motor]
+    # Procedimiento para asiento
+    gui.show_calib_instructions('assdepth')
+    comm.send_bytes('mux001')
+    motor_pines['assdepth'].value(1)
+    while True:
+        lu1 = sensor_check_range(comm, 'lu1')
+        lu2 = sensor_check_range(comm, 'lu2')
+        if turn_counter.value() == 1:
+            pos += 1
+        if (lu1 or lu2) or pos >= MAX_POS:
+            break
+    motor_pines['assdepth'].value(0)
+    new_pos['assdepth'] = pos
+    pos = 0
 
-        # Variable donde guardar la posicion
-        pos = 0
+    # Procedimiento para lumbar
+    gui.show_calib_instructions('lumbar')
+    comm.send_bytes('mux010')
+    motor_pines['lumbar'].value(1)
+    while True:
+        lu1 = sensor_check_range(comm, 'lu1')
+        lu2 = sensor_check_range(comm, 'lu2')
+        if turn_counter.value() == 1:
+            pos += 1
+        if (lu1 or lu2) or pos >= MAX_POS:
+            break
+    motor_pines['lumbar'].value(0)
+    new_pos['lumbar'] = pos
+    pos = 0
 
-        # Mostrar instruccion
-        gui.show_calib_instructions(motor)
+    # Procedimiento para cabezal
+    gui.show_calib_instructions('cabezal')
+    comm.send_bytes('mux011')
+    motor_pines['cabezal'].value(1)
+    while True:
+        sensor_us.send_pulse_centimeters()
+        if turn_counter.value() == 1:
+            pos += 1
+        if sensor_us.send_pulse_centimeters() > 10 or pos >= MAX_POS:
+            break
+    motor_pines['cabezal'].value(0)
+    new_pos['cabezal'] = pos
+    pos = 0
 
-        # Encender motor
-        for pin in pines:
-            pin.value(1)
-
-        # Hasta que no este en la posicion correcta...
-        while not adc_check_threshold(pin_sensor_list[0], *pin_sensor_list[2:]):
-            # Contar pulsos/vueltas del motor
-            if turn_counter.value() == 1:
-                pos += 1
-
-        # Detener motor al llegar a la posicion correcta
-        for pin in pines:
-            pin.value(0)
-
-        # Guardar en dict con posiciones
-        new_pos[motor] = pos
+    # Procedimiento para apoyabrazos
+    gui.show_calib_instructions('apbrazo')
+    comm.send_bytes('mux100')
+    motor_pines['apbrazo'][0].value(1)
+    motor_pines['apbrazo'][1].value(1)
+    while True:
+        apb = sensor_check_range(comm, 'apb')
+        if turn_counter.value() == 1:
+            pos += 1
+        if apb or pos >= MAX_POS:
+            break
+    motor_pines['apbrazo'][0].value(0)
+    motor_pines['apbrazo'][1].value(0)
+    new_pos['apbrazo'] = pos
+    pos = 0
 
     # Devolver dict con posiciones
     return new_pos
