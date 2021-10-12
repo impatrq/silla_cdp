@@ -3,7 +3,7 @@ import ujson as json
 from machine import Pin, ADC
 import cdp_helper as helper
 #import cdp_gui as gui
-from cdp_classes import Usuario, StateMachine
+from cdp_classes import Usuario, StateMachine, Sensor_US
 
 # Estados para la FSM
 STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
@@ -11,7 +11,8 @@ STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
 # Variables de pines
 pin_encoder = 35
 
-#TODO: Agregar pines ultrasonido e instancia de clase (discutir por entradas disponibles)
+# Sensor ultrasonido
+sensor_us = Sensor_US(16, 36)
 
 #TODO: Reemplazar numero de pines por los correctos.
 sensor_pines = {
