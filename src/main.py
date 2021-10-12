@@ -21,14 +21,20 @@ uart = ControlUART(9600, 17, 34)
 
 # Pines de los motores
 motor_pines = {
-    'cabezal_adelante' : [32],
-    'apbrazo_adelante' : [33, 25],
-    'assdepth_adelante' : [14],
-    'assheight_adelante' : [0],
-    'cabezal_atras' : [33],
-    'apbrazo_atras' : [25, 27],
-    'assdepth_atras' : [12],
-    'assheight_atras' : [15]
+    "Adelante": {
+        'cabezal' : [13],
+        'apbrazo' : [4, 15],
+        'assdepth' : [14],
+        'assheight' : [26],
+        'lumbar' : [33]
+    },
+    "Atras" : {
+        'cabezal' : [12],
+        'apbrazo' : [2, 0],
+        'assdepth' : [27],
+        'assheight' : [25],
+        'lumbar' : [32]
+    }
 }
 
 # Aca se guardan los datos obtenidos del archivo "cdp_config.json"
@@ -80,10 +86,12 @@ def load_users_from_file_global():
             json.dump(c, file)
         return load_users_from_file_global()
 
+# O(n^3) <-- Debe haber una manera de hacerlo mas optimo
 def set_motorpin_output():
-    for value in motor_pines.values():
-        for index, pin in enumerate(value):
-            value[index] = Pin(pin, Pin.OUT, Pin.PULL_DOWN, 0)
+    for pin_list in motor_pines.values():
+        for value in pin_list.values():
+            for index, pin in enumerate(value):
+                value[index] = Pin(pin, Pin.OUT, Pin.PULL_DOWN, 0)
 
 def wait_for_action():
     # TODO: interacción con la GUI
