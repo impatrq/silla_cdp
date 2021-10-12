@@ -5,7 +5,7 @@ from utime import sleep_ms
 import cdp_gui as gui
 from cdp_classes import ControlUART
 
-# ==================== FUNCIONES DE ADC / PINES ==================== #
+# ==================== SENSORES ==================== #
 
 def sensor_check_range(comm: ControlUART, which: str, minim: int = 0, maxim: int = 1023) -> bool:
     """
@@ -29,7 +29,18 @@ def sensor_check_range(comm: ControlUART, which: str, minim: int = 0, maxim: int
         print(read)
         return False
 
-def adc_update_all_states(comm: ControlUART, sensors: list, v_update: bool = False) -> bool:
+def sensor_check_all_states(comm: ControlUART, sensors: list, v_update: bool = False) -> bool:
+    """
+        Pregunta por cada sensor dentro de la lista `sensors` mediante 'comm', luego lo recibe, 
+        e indica si TODOS estan dentro de su rango especificado.
+
+        Tambien llama a una funcion para actualizar los valores dentro del modulo `cdp_gui`
+
+        Args:
+        `comm`: Objeto de `ControlUART` utilizado para el pedido.
+        `sensors`: lista con strings de longitud 3 con el identificador del sensor. Formato => [sensor, minimo, maximo]
+        `v_update`: bool que indica si llamar o no a la funcion para actualizar visuales.
+    """
     well_sit_cond = len(sensors)
     i = 0
 
@@ -45,11 +56,22 @@ def adc_update_all_states(comm: ControlUART, sensors: list, v_update: bool = Fal
 
     return i >= well_sit_cond
 
-def wait_for_interrupt_adc(comm: ControlUART, which: str):
+def wait_for_interrupt_sensor(comm: ControlUART, which: str):
+    """
+        Pregunta por el sensor `which` mediante 'comm', cuando recibe algo, sale del bucle.
+
+        Args:
+        `comm`: Objeto de `ControlUART` utilizado para el pedido.
+        `which`: string de longitud 3 con el identificador del sensor.
+    """
     while True:
         if sensor_check_range(comm, which):
             break
         sleep_ms(100)
+
+# ==================== ENCODER ==================== #
+
+# ==================== PINES ==================== #
 
 # Versión trucha de wait_for_edge de RPi.GPIO
 def wait_for_interrupt(pin: Pin):
@@ -57,7 +79,7 @@ def wait_for_interrupt(pin: Pin):
         if pin.value() == 1:
             break
 
-# ==================== FUNCIONES DE MOTORES ==================== #
+# ==================== MOTORES ==================== #
 
 # Función para obtener los datos de los motores
 def load_json() -> dict:
