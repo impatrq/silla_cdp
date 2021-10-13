@@ -45,7 +45,8 @@ void uart_send_byte(uint8_t c) {
 
 // Enviar caracteres
 void uart_send_array(uint8_t *c, uint16_t len) {
-	for (uint16_t i = 0; i < len; i++) {
+	uint16_t i;
+	for (i = 0; i < len; i++) {
 		uart_send_byte(c[i]);
 	}
 }
