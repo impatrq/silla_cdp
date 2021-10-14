@@ -1,6 +1,6 @@
 <h1 align="center">Silla CDP</h1>
 <p align="center">
-<img width=200 src="media/cdp-logo-v2.png">
+<img width=300 src="media/cdp-logo-remade-30s-squared.gif">
 <div align="center">
 
 |[Página Web](#silla-cdp)|[Contáctenos](#contacto)|
