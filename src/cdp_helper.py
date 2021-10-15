@@ -1,138 +1,206 @@
 # Modulo con funciones auxiliares para silla CDP
 import json
-from machine import Pin, ADC
+from machine import Pin
 from utime import sleep_ms
 import cdp_gui as gui
+from cdp_classes import ControlUART, Sensor_US
 
-# Macros
-ADC_THRESHOLD = 512
+# ==================== SENSORES ==================== #
 
-# Función para obtener una lectura de ADC y transformarla a estado lógico.
-def adc_check_threshold(pin: ADC, minim: int = 0, maxim: int = 1023) -> bool:
-    return maxim > pin.read() > minim
+def sensor_check_range(comm: ControlUART, which: str, minim: int = 0, maxim: int = 1023) -> bool:
+    """
+        Pregunta por el sensor 'which' mediante 'comm', luego lo recibe, y si es un numero,
+        indica si esta dentro del rango especificado.
 
-def adc_update_all_states(sensor_pines: dict, v_update: bool = False) -> bool:
-    well_sit_cond = len(sensor_pines)
+        Args:
+        `comm`: Objeto de `ControlUART` utilizado para el pedido.
+        `which`: string de longitud 3 con el identificador del sensor.
+        `minim`: cota inferior no infima del rango.
+        `maxim`: cota superior no maxima del rango.
+    """
+    if len(which) != 3:
+        print("Longitud incorrecta. Evitando chequeo.")
+        return False
+    read = comm.send_and_receive(which)
+    try:
+        read = int(read)
+        return maxim > read > minim
+    except ValueError():
+        print(read)
+        return False
+
+def sensor_check_all_states(comm: ControlUART, sensors: list, v_update: bool = False) -> bool:
+    """
+        Pregunta por cada sensor dentro de la lista `sensors` mediante 'comm', luego lo recibe, 
+        e indica si TODOS estan dentro de su rango especificado.
+
+        Tambien llama a una funcion para actualizar los valores dentro del modulo `cdp_gui`
+
+        Args:
+        `comm`: Objeto de `ControlUART` utilizado para el pedido.
+        `sensors`: lista con strings de longitud 3 con el identificador del sensor. Formato => [sensor, minimo, maximo]
+        `v_update`: bool que indica si llamar o no a la funcion para actualizar visuales.
+    """
+    well_sit_cond = len(sensors)
     i = 0
 
-    # Poner verdadero o falso en el dict de sensores segun si pasan el umbral o no.
-    for pin in sensor_pines.values():
-        val = adc_check_threshold(pin[0], minim=ADC_THRESHOLD)
-        pin[1] = val
+    # Formato(sensors) => [ident, minim, maxim]
+    for sensor in sensors:
+        val = sensor_check_range(comm, sensor[0], minim=sensor[1], maxim=sensor[2])
         i += int(val)
-    
+
     # Si se le pasa este parámetro, llamar a la funcion para actualizar la pantalla.
     if v_update:
         #TODO: Provisional hasta tener la verdadera funcion
         gui.update_sensor_state()
 
-    return True if (i >= well_sit_cond) else False
+    return i >= well_sit_cond
 
-# Versión trucha de wait_for_edge (quizás provisional)
+def wait_for_interrupt_sensor(comm: ControlUART, which: str):
+    """
+        Pregunta por el sensor `which` mediante 'comm', cuando recibe algo, sale del bucle.
+
+        Args:
+        `comm`: Objeto de `ControlUART` utilizado para el pedido.
+        `which`: string de longitud 3 con el identificador del sensor.
+    """
+    while True:
+        if sensor_check_range(comm, which):
+            break
+        sleep_ms(100)
+
+# ==================== ENCODER ==================== #
+
+def set_select_encoder(comm: ControlUART, value: str):
+    """
+        Envía el comando para establecer el SELECT del multiplexor. 
+        NOTA: no tiene en cuenta si el valor enviado no es un valor binario.
+
+        Args:
+        `comm`: Objeto de `ControlUART` utilizado para el pedido.
+        `value`: string de longitud 3 con el valor en binario que se desea establecer.
+    """
+    try:
+        if len(value) != 3:
+            print("Longitud incorrecta al establecer seleccion MUX")
+            return False
+        int(value)
+        r = comm.send_and_receive(f"mux{value}")
+        return r == "ADDRSET"
+    except ValueError:
+        print("El valor no es un numero al establecer seleccion MUX")
+        return False
+
+# ==================== PINES ==================== #
+
+# Versión trucha de wait_for_edge de RPi.GPIO
 def wait_for_interrupt(pin: Pin):
     while True:
         if pin.value() == 1:
             break
 
-def wait_for_interrupt_adc(pin: ADC, minim: int, maxim: int):
-    while True:
-        if adc_check_threshold(pin, minim, maxim) == 1:
-            break
+# ==================== MOTORES ==================== #
 
 # Función para obtener los datos de los motores
 def load_json() -> dict:
     with open("settings/motor_data.json", "r") as file:
         dict_motores = json.load(file)
-        file.close()
     return dict_motores
 
 # Funcion para guardar los datos de los motores
 def save_json(data: dict):
     with open("settings/motor_data.json", "w") as outfile:
-        json.dump(data, outfile, indent = 4)
-        outfile.close()
+        json.dump(data, outfile)
 
-def start_calibration(motor_pines: dict, sensor_pines: dict, turn_counter: Pin):
+# Mover motor hasta completar con el sensado requerido
+def move_until_finished(comm: ControlUART, turn_counter: Pin, motor_pines: list, sensors_to_check: list, mux_code:str, max_position: int, sensor_us: Sensor_US = None) -> int:
+    """
+        Mueve un motor especifico y cuenta las vueltas hasta completar su sensado. Devuelve la nueva posicion.
+    """
+    # Safety checks
+    for i in sensors_to_check:
+        if len(i[1]) != 3:
+            return 0
+    if len(mux_code) != 3 or comm is None:
+        return 0
+
+    pos = 0
+    sensor_type = sensors_to_check[0]
+
+    # Setear encoder
+    comm.send_bytes(f'mux{mux_code}')
+
+    # Prender motores
+    for pin in motor_pines:
+        pin.value(1)
+
+    # Actuar segun tipo de sensor asignado
+    if sensor_type == "piezo":
+        while True:
+            pos += turn_counter.value()
+            if any(sensor_check_range(comm, sensor, minim, maxim) for sensor, minim, maxim in sensors_to_check[1:]) or pos >= max_position:
+                break
+    elif sensor_type == "ultra":
+        # Safety check
+        if sensor_us is None:
+            return 0
+        while True:
+            pos += turn_counter.value()
+            if sensor_us.send_pulse_centimeters() > 10 or pos >= max_position:
+                break
+
+    # Apagar motores
+    for pin in motor_pines:
+        pin.value(0)
+
+    # Devolver nueva posicion
+    return pos
+
+def start_calibration(comm: ControlUART, sensor_us: Sensor_US, calibration_data: dict, turn_counter: Pin):
+    """
+        Realiza el proceso de calibración. Devuelve el diccionario de posiciones obtenido.
+
+        Args:
+        `comm`: Objeto de ControlUART para comunicacion con sensores.
+        `sensor_us`: Objeto de Sensor_US para posicionamiento del cabezal.
+        `calibration_data`: Diccionario con las configuraciones de calibración (sacados desde config).
+        `turn_counter`: Pin donde entra la salida del multiplexor.
+    """
     # Diccionario con nuevas posiciones
     new_pos = {}
-    
-    # Mostrar instruccion en pantalla (placeholder)
+
+    # Esperar por confirmacion de inicio
     gui.show_calib_instructions('bar')
+    wait_for_interrupt_sensor(comm, 'bar')
 
-    # Esperar por presion en varilla
-    wait_for_interrupt_adc(sensor_pines['bar'][0], *sensor_pines['bar'][2:])
-
-    # Por cada motor...
-    for motor, pines in motor_pines.items():
-        # Variable de lista con valores
-        pin_sensor_list = sensor_pines[motor]
-
-        # Variable donde guardar la posicion
-        pos = 0
-        
-        # Mostrar instruccion
+    # Formato config => [motor_pines[], sensors[type, str, min, max], mux_code, max_pos]
+    for motor, config in calibration_data.items():
         gui.show_calib_instructions(motor)
-
-        # Encender motor
-        for pin in pines:
-            pin.value(1)
-
-        # Hasta que no este en la posicion correcta...
-        while not adc_check_threshold(pin_sensor_list[0], *pin_sensor_list[2:]):
-            # Contar pulsos/vueltas del motor
-            if turn_counter.value() == 1:
-                pos += 1
-
-        # Detener motor al llegar a la posicion correcta
-        for pin in pines:
-            pin.value(0)
-
-        # Guardar en dict con posiciones
-        new_pos[motor] = pos
+        new_pos[motor] = move_until_finished(comm, turn_counter, *config, sensor_us)
 
     # Devolver dict con posiciones
     return new_pos
 
-# Función para mover los motores
-def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
-    dict_motores = load_json()
+def setup_motors_to_position(motor_pines: dict, turn_counter: Pin, new_config: dict = None):
+    """
+        Mueve los motores hasta la posicion indicada en `new_config`.
 
-    for motor in dict_motores['Actuales']:
-        # Sacar posicion del motor
-        ciclos = dict_motores['Actuales'][motor]
+        - Para una posicion determinada, pasarle motor_pines['Adelante'] y una configuracion, previamente se debe estar en posicion cero.
+        - Para volver a la posicion cero 'default', pasarle motor_pines['Atras'] y ninguna configuracion. Esto hace automaticamente que vuelva a la posicion cero.
+    """
+    # Para volver a posicion cero
+    if new_config is None:
+        new_config = {"assheight": 0, "assdepth": 0, "lumbar": 0,"cabezal": 0, "apbrazo": 0}
 
-        # Poner en alto los pines enable
-        for pin in motor_pines[motor]:
-            pin.value(1)
-
-        # Hacer andar el motor hasta terminar los ciclos
-        while ciclos > 0:
-            gui.motor_values[motor] = True
-            pin_atras.value(1)
-            wait_for_interrupt(pin_sensor)
-            pin_atras.value(0)
-            ciclos -= 1
-        
-        # Poner en bajo todos los pines enable
-        for pin in motor_pines[motor]:
-            pin.value(0)
-
-        # Indicarle al modulo GUI que el motor ya no se está moviendo
-        gui.motor_values[motor] = False
-
-        # Guardar nueva posicion de este motor
-        dict_motores['Actuales'][motor] = ciclos
-    
-    # Guardar nueva posicion de los motores
-    save_json(dict_motores)
-
-def setup_motor_config(new_config: dict, motor_pines: dict, turn_counter: Pin):
     # Cargar JSON para despues poder guardar las nuevas posiciones
     d = load_json()
-    
+
     for motor, ciclos in new_config.items():
         # Contador de ciclos
-        count = 0
+        if ciclos == 0:
+            count = -(d['Actuales'][motor])
+        else:
+            count = 0
 
         # Prender el/los motor/es
         for pin in motor_pines[motor]:
@@ -140,9 +208,7 @@ def setup_motor_config(new_config: dict, motor_pines: dict, turn_counter: Pin):
 
         # Contar vueltas hasta llegar a los ciclos necesarios
         while count < ciclos:
-            if turn_counter.value() == 1:
-                count += 1
-            sleep_ms(100)
+            count += turn_counter.value()
 
         # Apagar los motores
         for pin in motor_pines[motor]:
