@@ -1,2 +1,14 @@
+# Python
 /__pycache__
-motor_data.json
+/src/__pycache__
+
+# Archivos generados por micropy
+# Stubs
+.micropy
+micropy.json
+# Configuración de VSCode
+.vscode
+.pylintrc
+
+# Archivos de Atmel Studio
+/ATMega-UART/.vs
