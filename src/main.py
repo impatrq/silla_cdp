@@ -60,11 +60,17 @@ def load_config_from_file_global():
         print("cdp_config.json is missing. Creating a new default one...")
         with open("settings/cdp_config.json", "w") as file:
             c = {
-                "first_time_open" : True
+                "first_time_open" : True,
+                'calibration_data' : {
+                    "assheight" :   ['TBD', ['piezo', ["as1", 0, 1023], ["as2", 0, 1023]], '000', 1024],
+                    "assdepth" :    ['TBD', ['piezo', ["lu1", 0, 1023], ["lu2", 0, 1023]], '001', 1024],
+                    "lumbar" :      ['TBD', ['piezo', ["lu1", 0, 1023], ["lu2", 0, 1023]], '010', 1024],
+                    "cabezal" :     ['TBD', ['ultra'], '011', 1024],
+                    "apbrazo" :     ['TBD', ['pin', ["apb", 0, 1023], ["as2", 0, 1023]], '100', 1024]
+                }
             }
             json.dump(c, file)
         return load_config_from_file_global()
-
 
 def load_users_from_file_global():
     new_list = []
