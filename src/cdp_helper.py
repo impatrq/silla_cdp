@@ -210,6 +210,11 @@ def return_to_default(motor_pines: dict, turn_counter: Pin):
     save_json(dict_motores)
 
 def setup_motor_config(new_config: dict, motor_pines: dict, turn_counter: Pin):
+    """
+        Mueve todos los motores hasta llegar a la posicion nueva indicada.
+
+        Entregar motor_pines['Adelante'] siempre.
+    """
     # Cargar JSON para despues poder guardar las nuevas posiciones
     d = load_json()
 
@@ -223,9 +228,7 @@ def setup_motor_config(new_config: dict, motor_pines: dict, turn_counter: Pin):
 
         # Contar vueltas hasta llegar a los ciclos necesarios
         while count < ciclos:
-            if turn_counter.value() == 1:
-                count += 1
-            sleep_ms(100)
+            count += turn_counter.value()
 
         # Apagar los motores
         for pin in motor_pines[motor]:
