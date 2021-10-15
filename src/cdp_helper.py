@@ -181,46 +181,26 @@ def start_calibration(comm: ControlUART, sensor_us: Sensor_US, calibration_data:
     # Devolver dict con posiciones
     return new_pos
 
-def return_to_default(motor_pines: dict, turn_counter: Pin):
+def setup_motors_to_position(motor_pines: dict, turn_counter: Pin, new_config: dict = None):
     """
-        Mueve todos los motores hasta llegar a la posición cero.
+        Mueve los motores hasta la posicion indicada en `new_config`.
 
-        Entregar motor_pines['Atras'] siempre.
+        - Para una posicion determinada, pasarle motor_pines['Adelante'] y una configuracion, previamente se debe estar en posicion cero.
+        - Para volver a la posicion cero 'default', pasarle motor_pines['Atras'] y ninguna configuracion. Esto hace automaticamente que vuelva a la posicion cero.
     """
-    dict_motores = load_json()
+    # Para volver a posicion cero
+    if new_config is None:
+        new_config = {"assheight": 0, "assdepth": 0, "lumbar": 0,"cabezal": 0, "apbrazo": 0}
 
-    for motor, ciclos in dict_motores['Actuales'].items():
-        # Arrancar los motores
-        for pin in motor_pines[motor]:
-            pin.value(1)
-
-        # Esperar hasta llegar a 0 ciclos
-        while ciclos > 0:
-            wait_for_interrupt(turn_counter)
-            ciclos -= 1
-
-        # Apagar los motores
-        for pin in motor_pines[motor]:
-            pin.value(0)
-
-        # Guardar nueva posicion de este motor
-        dict_motores['Actuales'][motor] = 0
-
-    # Guardar nueva posicion de los motores
-    save_json(dict_motores)
-
-def setup_motor_config(new_config: dict, motor_pines: dict, turn_counter: Pin):
-    """
-        Mueve todos los motores hasta llegar a la posicion nueva indicada.
-
-        Entregar motor_pines['Adelante'] siempre.
-    """
     # Cargar JSON para despues poder guardar las nuevas posiciones
     d = load_json()
 
     for motor, ciclos in new_config.items():
         # Contador de ciclos
-        count = 0
+        if ciclos == 0:
+            count = -(d['Actuales'][motor])
+        else:
+            count = 0
 
         # Prender el/los motor/es
         for pin in motor_pines[motor]:
