@@ -181,31 +181,30 @@ def start_calibration(comm: ControlUART, sensor_us: Sensor_US, calibration_data:
     # Devolver dict con posiciones
     return new_pos
 
-# Función para mover los motores
-def return_to_default(motor_pines: dict, pin_atras: Pin, pin_sensor: Pin):
+def return_to_default(motor_pines: dict, turn_counter: Pin):
+    """
+        Mueve todos los motores hasta llegar a la posición cero.
+
+        Entregar motor_pines['Atras'] siempre.
+    """
     dict_motores = load_json()
 
-    for motor in dict_motores['Actuales']:
-        # Sacar posicion del motor
-        ciclos = dict_motores['Actuales'][motor]
-
-        # Poner en alto los pines enable
+    for motor, ciclos in dict_motores['Actuales'].items():
+        # Arrancar los motores
         for pin in motor_pines[motor]:
             pin.value(1)
 
-        # Hacer andar el motor hasta terminar los ciclos
+        # Esperar hasta llegar a 0 ciclos
         while ciclos > 0:
-            pin_atras.value(1)
-            wait_for_interrupt(pin_sensor)
-            pin_atras.value(0)
+            wait_for_interrupt(turn_counter)
             ciclos -= 1
 
-        # Poner en bajo todos los pines enable
+        # Apagar los motores
         for pin in motor_pines[motor]:
             pin.value(0)
 
         # Guardar nueva posicion de este motor
-        dict_motores['Actuales'][motor] = ciclos
+        dict_motores['Actuales'][motor] = 0
 
     # Guardar nueva posicion de los motores
     save_json(dict_motores)
