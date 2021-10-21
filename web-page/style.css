@@ -200,9 +200,10 @@ body {background-color: darkorange;}
 .footer-container_social-links a, i {
     font-size: 2em;
 }
-.fa-github-square, .fa-instagram-square {
+.fa-github-square, .fa-instagram-square, .fa-envelope-square {
+    padding: 3px;
     display: inline-block;
-    width: 20%;
+    width: 31%;
     text-align: center;
     color: #eee;
 }
