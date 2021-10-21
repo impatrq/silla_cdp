@@ -224,3 +224,24 @@ body {background-color: darkorange;}
     margin-top: 10px;
     font-size: 0.8em;
 }
+
+.to-top {
+    display: none;
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 99;
+    border: none;
+    outline: none;
+    background-color: var(--lighter-main-color);
+    opacity: 0.3;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 50%;
+    font-size: 1.2em;
+    transition: opacity 0.3s ease;
+}
+.to-top:hover {
+    background-color: var(--main-color);
+    opacity: 0.8;
+}
