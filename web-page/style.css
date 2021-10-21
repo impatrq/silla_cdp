@@ -245,3 +245,18 @@ body {background-color: darkorange;}
     background-color: var(--main-color);
     opacity: 0.8;
 }
+
+@media only screen and (max-width: 600px) {
+    .nav-container nav {
+        display: none;
+    }
+    .nav-container i {
+        visibility: visible;
+    }
+    .carousel {
+        width: 300px;
+    }
+    .carousel__images img {
+        width: 300px;
+    }
+}

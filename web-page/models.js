@@ -6,18 +6,19 @@ let translateX = 0;
 
 carouselButtons.forEach(button => {
     button.addEventListener('click', event => {
+        var imageWidth = document.querySelector('.carousel').offsetWidth;
         if (event.target.id === 'previous') {
             if (imageIndex !== 1) {
                 imageIndex--;
-                translateX += 600;
+                translateX += imageWidth;
             }
         } else {
             if (imageIndex !== imagesNumber) {
                 imageIndex++;
-                translateX -= 600;
+                translateX -= imageWidth;
             }
         }
-
+        console.log(imageWidth)
         carouselImages.style.transform = `translateX(${translateX}px)`;
     });
 });
