@@ -54,7 +54,7 @@
 /* PREVIEW IMAGE */
 .preview-container {
     position: relative;
-    width: 100vw;
+    width: 100%;
     height: 325px;
     z-index: -2;
 }
@@ -84,7 +84,79 @@
     font-weight: bold;
 }
 .preview-container__overlay-desc {
+    text-align: center;
     max-width: 80%;
     font-size: 1.25em;
     margin-top: 2.5em;
+}
+
+/* MODELOS */
+.models-container {
+    border-radius: 10px;
+    box-shadow: 0px -10px 10px black;
+    display: flex;
+    flex-direction: column;
+    background-color: #eee;
+}
+.models-container hr {
+    width: 98%;
+    margin: auto;
+    height: 3px;
+    border-top: 2px solid #bbb;
+    border-radius: 2px;
+}
+.models-container__info {
+    border-radius: 10px;
+}
+.models-container__info-title {
+    color: var(--main-color);
+    padding: 25px;
+    font-size: 3em;
+    text-shadow: 1px 1px 3px black;
+}
+
+/* CARRUSEL DE IMAGENES DE MODELOS */
+
+.carousel {
+    align-items: center;
+    display: flex;
+    margin: 25px auto;
+    width: 300px;
+    overflow: hidden;
+    position: relative;
+}
+.carousel__images {
+    display: flex;
+    transform: translateX(0);
+    transition: Transform 0.25s;
+}
+.carousel__images img {
+    border-radius: 5px;
+}
+.carousel__button {
+    background: var(--main-color);
+    border: 0;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: bold;
+    height: 3rem;
+    opacity: 0.25;
+    position: absolute;
+    transition: opacity 0.25s;
+    width: 3rem;
+    z-index: 1;
+}
+.carousel__button.previous {
+    left: 5px;
+}
+.carousel__button.next {
+    right: 5px;
+}
+.carousel__button:hover {
+    opacity: 0.5;
+}
+.carousel__radio input {
+    display: none;
 }
