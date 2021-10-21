@@ -9,12 +9,12 @@ carouselButtons.forEach(button => {
         if (event.target.id === 'previous') {
             if (imageIndex !== 1) {
                 imageIndex--;
-                translateX += 300;
+                translateX += 600;
             }
         } else {
             if (imageIndex !== imagesNumber) {
                 imageIndex++;
-                translateX -= 300;
+                translateX -= 600;
             }
         }
 
