@@ -18,10 +18,12 @@ body {background-color: darkorange;}
     justify-content: space-between;
     background-color: var(--main-color);
     box-shadow: -2px 2px 15px black;
+    z-index: 10;
 }
 .nav-container img {
     margin-left: 10px;
     height: 100%;
+    z-index: 10;
 }
 .nav-container nav {
     height: 80px;
@@ -55,7 +57,7 @@ body {background-color: darkorange;}
 .btn-center:hover::after {
     transform: scale(1, 1);
 }
-.nav-container i {
+.hamburger {
     visibility: hidden;
     width: 40px;
     height: 32px;
@@ -67,6 +69,9 @@ body {background-color: darkorange;}
     color: #444;
     cursor: pointer;
     background-color: var(--lighter-main-color);
+}
+.mobile-nav {
+    display: none;
 }
 
 /* PREVIEW IMAGE */
@@ -251,13 +256,81 @@ body {background-color: darkorange;}
     .nav-container nav {
         display: none;
     }
-    .nav-container i {
-        visibility: visible;
+    .nav-container {
+        z-index: 10;
     }
     .carousel {
         width: 300px;
     }
     .carousel__images img {
         width: 300px;
+    }
+
+    .hamburger {
+        padding: 0;
+        margin: 0;
+        visibility: visible;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 80px;
+        height: 80px;
+        transition: all .5s ease-in-out;
+    }
+    .hamburger__icon {
+        width: 40px;
+        height: 4px;
+        background: #000;
+        border-radius: 5px;
+        transition: all .3s ease-in-out;
+    }
+    .hamburger__icon::after, .hamburger__icon::before {
+        content: '';
+        position: absolute;
+        width: 40px;
+        height: 4px;
+        background: #000;
+        border-radius: 5px;
+        transition: all .3s ease-in-out;
+    }
+    .hamburger__icon::before {
+        transform: translateY(-12px);
+    }
+    .hamburger__icon::after {
+        transform: translateY(12px);
+    }
+
+    .hamburger.open .hamburger__icon {
+        transform: translateX(-50px);
+        background: transparent;
+    }
+    .hamburger.open .hamburger__icon::before {
+        transform: rotate(45deg) translate(35px, -35px);
+    }
+    .hamburger.open .hamburger__icon::after {
+        transform: rotate(-45deg) translate(35px, 35px);
+    }
+
+    .mobile-nav {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        width: 100%;
+        min-height: 150px;
+        display: block;
+        z-index: 9;
+        background-color: var(--main-color);
+        margin-top: 80px;
+        transition: 0.4s;
+    }
+    .mobile-nav.is-active {
+        left: 0;
+    }
+    .mobile-nav a {
+        display: block;
+        text-align: center;
+        padding: 16px;
     }
 }
