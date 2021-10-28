@@ -31,37 +31,59 @@
                 </div>
             </div>
         </header>
+
+        <div class="preview-container">
+            <div class="preview-container__img"></div>
+            <div class="preview-container__overlay">
+                <div class="preview-container__overlay-title">Silla C.D.P</div>
+                <p class="preview-container__overlay-desc">
+                    Acá se puede encontrar la información general sobre nuestro proyecto y nosotros.
+                </p>
+            </div>
+        </div>
+
+        <div class="alumno-container">
+            <div class="alumno-img">
+                <div class="alumno-img__dim"></div>
+                <h3>Gian Keberlein</h3>
+                <p>Adulador Sexual</p>
+            </div>
+        </div>
+
         <div>
             <h3 class="tit" id=h2> ¿Quienes somos?</h3>
-            <p class=txt> Somos alumnos de la EESTN°7 IMPA, cursando el 7° año de la carrera en la especialidad aviónica. Los integrantes del grupo somos 
+            <p class=txt> Somos alumnos de la EESTN°7, cursando el 7° año de la carrera en la especialidad aviónica. Los integrantes del grupo somos 
                 AZULA, Facundo; GALLOTO, Jonathan; KEBERLEIN, Gian Franco; SANJURJO, Bruno y VERGE, Ignacio. </p>
         </div>
         <div>
-            <img src="images/gian.jpeg">
-            <img src="images/facu.jpeg"> 
-            <img src="images/jony.jpeg">
-            <img src="images/nacho.jpeg">
-            <img src="images/bruno.jpeg">
+            <img class="alm" src="images/gian.jpeg">
+            <img class="alm" src="images/facu.jpeg"> 
+            <img class="alm" src="images/jony.jpeg">
+            <img class="alm" src="images/nacho.jpeg">
+            <img class="alm" src="images/bruno.jpeg">
         </div>
         <h3 class=tit id=h3>¿De qué se trata CDP?</h3>
             <p class=txt>Nuestro proyecto consiste en una silla que, por medio de sensores y motores, calibra sus dimensiones en función de 
                 las características físicas del usuario para prevenir problemas traumatológicos y reumatológicos a largo plazo, 
                 consecuencias comunes de la mala postura durante actividades que impliquen estar sentados, como el uso prolongado 
                 del ordenador y el celular, el trabajo de oficina, entre otros. </p>
-    <footer class="footer-container">
-        <div class="footer-container__social">
-            <p>Más sobre el proyecto en</p>
-                <div id=h4 class="footer-container__social-links">
-                    <i class="fas fa-icon"></i>
+        
+        <footer class="footer-container">
+            <div class="footer-container__social">
+                <p>Más sobre el proyecto en</p>
+                <div class="footer-container__social-links">
                     <a href="https://github.com/impatrq/silla_cdp" target="_blank" rel="noopener noreferrer"><i class="fab fa-github-square"></i></a>
-                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram-square"></i></a>
+                    <a href="https://www.instagram.com/silla_cdp/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram-square"></i></a>
+                    <a href="mailto:sillacdp@gmail.com" target="_blank" rel="noopener noreferrer"><i class="fas fa-envelope-square"></i></a>
                 </div>
-        </div>
-        <hr>
-        <img src="images/logo-impa.png" alt="Logo IMPA TRQ">
-        <p class="footer-container__direccion">Otamendi y Juan B. Justo, Quilmes.</p>
-    </footer>
+            </div>
+            <hr>
+            <img src="images/logo-impa.png" alt="Logo IMPA TRQ">
+            <p class="footer-container__direccion">Otamendi y Juan B. Justo, Quilmes.</p>
+            <p class="footer-container__rights">Copyright 2021 C.D.P.</p>
+        </footer>
 
-    <script src="main.js"></script>
+        <button onclick="topFunction()" id="btnScrollTop" title="Ir hasta arriba"><i class="to-top fas fa-chevron-up"></i></button>
+        <script src="main.js"></script>
     </body>
 </html>

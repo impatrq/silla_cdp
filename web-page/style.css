@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-    font-family: sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
 }
 
@@ -25,6 +27,12 @@
     font-family: sans-serif;
     font-size: 16px;
     line-height: 20px;
+}
+.alm {
+    image-resolution: 100px;
+}
+.alm:nth-child(1) {
+    transform: rotate(-90deg);
 }
 :root {
     --main-color: #e88e33;
@@ -104,10 +112,12 @@
     z-index: -2;
 }
 .preview-container__img {
-    display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    background-image: url('images/cdp-banner.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
 }
 .preview-container__overlay {
     position: absolute;
