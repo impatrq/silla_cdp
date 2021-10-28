@@ -1,4 +1,3 @@
-
 // BOTON PARA SCROLL HACIA ARRIBA
 topButton = document.getElementById('btnScrollTop');
 
@@ -7,6 +6,7 @@ window.onscroll = function() {scrollFunction()};
 // MANEJAR NAV RESPONSIVE
 const hamburger = document.querySelector('.hamburger');
 const mobileNav = document.querySelector('.mobile-nav');
+const navButtons = document.querySelectorAll('.nav-button');
 let menuOpen = false;
 
 hamburger.addEventListener('click', button => {
@@ -22,6 +22,12 @@ hamburger.addEventListener('click', button => {
         menuOpen = false;
     }
 });
+
+navButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+        document.body.classList.remove('disableScroll');
+    })
+})
 
 // Funciones
 function scrollFunction() {
