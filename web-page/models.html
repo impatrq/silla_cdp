@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="./images/cdp-icon.ico" type="images/logo-icon.ico">
+        <meta name="description" content="CDP es el proyecto tecnológico de séptimo año de un grupo de alumnos de la EEST°7">
+        <meta name="keywords" content="ONIET, proyecto tecnológico, IMPA, EESTN°7, TRQ, CDP, Corrector de postura">
+        <meta name="author" content="CDP">
+        <meta name="robots" content="noindex"> 
+        <link rel="stylesheet" href="style.css">
+        <script src="https://kit.fontawesome.com/30735d7de8.js" crossorigin="anonymous"></script>
+        <title>C.D.P. - Modelos</title>
+    </head>
+    <body>
+        <div class="mobile-nav">
+            <a class="nav-button btn-center" href="index.html">Quienes Somos</a>
+            <a class="nav-button btn-center" href="index.html">Sobre el Proyecto</a>
+            <a class="nav-button btn-center"href="index.html">Contacto</a>
+            <a class="nav-button btn-center" href="#">Modelos en 3D</a>
+        </div>
+        <div class="nav-container">
+            <a href="index.html"><img src="images/cdp-header.png" alt="Logo CDP"></a>
+            <nav id='nav-options'>
+                <a class="nav-button btn-center" href="index.html">Quienes Somos</a>
+                <a class="nav-button btn-center" href="index.html">Sobre el Proyecto</a>
+                <a class="nav-button btn-center"href="index.html">Contacto</a>
+                <a class="nav-button btn-center" href="#">Modelos en 3D</a>
+            </nav>
+            <div class="hamburger">
+                <div class="hamburger__icon"></div>
+            </div>
+        </div>
+
+        <div class="preview-container">
+            <img class="preview-container__img" src="images/silla-2.png" alt="Preview Modelos">
+            <div class="preview-container__overlay">
+                <div class="preview-container__overlay-title">Modelos en 3D</div>
+                <p class="preview-container__overlay-desc">
+                    Aquí se pueden encontrar los trabajos realizados en SolidWorks, el diagramado de cada parte importante de la silla, y un modelo completo de ella.
+                </p>
+            </div>
+        </div>
+
+        <section class="models-container">
+            <div class="models-container__info">
+                <h2 class="models-container__info-title">Visualice los modelos</h2>
+            </div>
+            <hr>
+            <div class="carousel">
+                <button class="carousel__button previous" id="previous"><</button>
+                <div class="carousel__images">
+                    <img src="images/silla-1.png" alt="Imagen modelo 3D">
+                    <img src="images/silla-2.png" alt="Imagen modelo 3D">
+                    <img src="images/silla-4.png" alt="Imagen modelo 3D">
+                    <img src="images/silla-5.png" alt="Imagen modelo 3D">
+                    <img src="images/silla-6.png" alt="Imagen modelo 3D">
+                    <img src="images/silla-7.png" alt="Imagen modelo 3D">
+                    <img src="images/silla-8.png" alt="Imagen modelo 3D">
+                </div>
+                <button class="carousel__button next" id="next">></button>
+            </div>
+        </section>
+
+        <footer class="footer-container">
+            <div class="footer-container__social">
+                <p>Más sobre el proyecto en</p>
+                <div class="footer-container__social-links">
+                    <a href="https://github.com/impatrq/silla_cdp" target="_blank" rel="noopener noreferrer"><i class="fab fa-github-square"></i></a>
+                    <a href="https://www.instagram.com/silla_cdp/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram-square"></i></a>
+                    <a href="mailto:sillacdp@gmail.com" target="_blank" rel="noopener noreferrer"><i class="fas fa-envelope-square"></i></a>
+                </div>
+            </div>
+            <hr>
+            <img src="images/logo-impa.png" alt="Logo IMPA TRQ">
+            <p class="footer-container__direccion">Otamendi y Juan B. Justo, Quilmes.</p>
+            <p class="footer-container__rights">Copyright 2021 C.D.P.</p>
+        </footer>
+
+        <button onclick="topFunction()" id="btnScrollTop" title="Ir hasta arriba"><i class="to-top fas fa-chevron-up"></i></button>
+        <script src="models.js"></script>
+        <script src="main.js"></script>
+    </body>
+</html>

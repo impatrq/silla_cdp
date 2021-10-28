@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="./images/cdp-icon.ico" type="images/logo-icon.ico">
+        <title>C.D.P. - Inicio</title>
+        <script src="https://kit.fontawesome.com/30735d7de8.js" crossorigin="anonymous"></script>
+        <meta name="description" content="CDP es el proyecto tecnológico de séptimo año de un grupo de alumnos de la EEST°7">
+        <meta name="keywords" content="ONIET, proyecto tecnológico, IMPA, EESTN°7, TRQ, CDP, Corrector de postura">
+        <meta name="author" content="CDP">
+        <meta name="robots" content="index"> 
+        <link rel="stylesheet" href= "style.css">
+        <link rel="stylesheet" href="home-style.css">
+    </head>
+    <body>
+        <header>
+            <div class="mobile-nav">
+                <a class="nav-button btn-center" href="index.html#about-quienes">Quienes Somos</a>
+                <a class="nav-button btn-center" href="index.html#about-trata">Sobre el Proyecto</a>
+                <a class="nav-button btn-center"href="index.html#contacto">Contacto</a>
+                <a class="nav-button btn-center" href="models.html">Modelos en 3D</a>
+            </div>
+            <div class="nav-container">
+                <a href="index.html"><img src="images/cdp-header.png" alt="Logo CDP"></a>
+                <nav id='nav-options'>
+                    <a class="nav-button btn-center" href="index.html#about-quienes">Quienes Somos</a>
+                    <a class="nav-button btn-center" href="index.html#about-trata">Sobre el Proyecto</a>
+                    <a class="nav-button btn-center"href="index.html#contacto">Contacto</a>
+                    <a class="nav-button btn-center" href="models.html">Modelos en 3D</a>
+                </nav>
+                <div class="hamburger">
+                    <div class="hamburger__icon"></div>
+                </div>
+            </div>
+        </header>
+
+        <div class="preview-container">
+            <div class="preview-container__img"></div>
+            <div class="preview-container__overlay">
+                <div class="preview-container__overlay-title">Silla C.D.P</div>
+                <p class="preview-container__overlay-desc">
+                    Acá se puede encontrar la información general sobre nuestro proyecto y nosotros.
+                </p>
+            </div>
+        </div>
+
+        <div class="about-container">
+            <h2 class="about-title" id="about-quienes"> ¿Quienes somos?</h2>
+            <p class="about-desc">
+                Somos alumnos de la EESTN°7, cursando el 7° año de la carrera en la especialidad aviónica. Los integrantes del grupo somos 
+                AZULA, Facundo; GALLOTO, Jonathan; KEBERLEIN, Gian Franco; SANJURJO, Bruno y VERGE, Ignacio.
+            </p>
+            <div class="cards-container">
+                <div class="alumno-card">
+                    <img class="rotate-left" src="images/gian.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Gian Keberlein</h3>
+                        <p>Desarrollador Líder, Electrónica y Diseño Web</p>
+                    </div>
+                </div>
+                <div class="alumno-card">
+                    <img src="images/nacho.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Ignacio Verge</h3>
+                        <p>Programación Web y Administración</p>
+                    </div>
+                </div>
+            </div>
+            <div class="cards-container">
+                <div class="alumno-card">
+                    <img src="images/jony.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Jonathan Galotto</h3>
+                        <p>Diseño y Modelado Físicos</p>
+                    </div>
+                </div>
+                <div class="alumno-card">
+                    <img class="rotate-right" src="images/facu.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Facundo Azula</h3>
+                        <p>Presentación, Documentación y Electrónica</p>
+                    </div>
+                </div>
+                <div class="alumno-card">
+                    <img src="images/bruno.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Bruno Sanjurjo</h3>
+                        <p>Electrónica</p>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <h2 class="about-title" id=about-trata>¿De qué se trata CDP?</h2>
+                <p class="about-desc">Nuestro proyecto consiste en una silla que, por medio de sensores y motores, calibra sus dimensiones en función de 
+                    las características físicas del usuario para prevenir problemas traumatológicos y reumatológicos a largo plazo, 
+                    consecuencias comunes de la mala postura durante actividades que impliquen estar sentados, como el uso prolongado 
+                    del ordenador y el celular, el trabajo de oficina, entre otros. </p>
+        </div>
+        
+        <footer id="contacto" class="footer-container">
+            <div class="footer-container__social">
+                <p>Más sobre el proyecto en</p>
+                <div class="footer-container__social-links">
+                    <a href="https://github.com/impatrq/silla_cdp" target="_blank" rel="noopener noreferrer"><i class="fab fa-github-square"></i></a>
+                    <a href="https://www.instagram.com/silla_cdp/" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram-square"></i></a>
+                    <a href="mailto:sillacdp@gmail.com" target="_blank" rel="noopener noreferrer"><i class="fas fa-envelope-square"></i></a>
+                </div>
+            </div>
+            <hr>
+            <img src="images/logo-impa.png" alt="Logo IMPA TRQ">
+            <p class="footer-container__direccion">Otamendi y Juan B. Justo, Quilmes.</p>
+            <p class="footer-container__rights">Copyright 2021 C.D.P.</p>
+        </footer>
+
+        <button onclick="topFunction()" id="btnScrollTop" title="Ir hasta arriba"><i class="to-top fas fa-chevron-up"></i></button>
+        <script src="main.js"></script>
+    </body>
+</html>
