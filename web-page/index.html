@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href= "style.css">
         <title>CDP</title>
         <script src="https://kit.fontawesome.com/30735d7de8.js" crossorigin="anonymous"></script>
         <meta charset="utf-8">
@@ -9,6 +8,8 @@
         <meta name="keywords" content="ONIET, proyecto tecnológico, IMPA, EESTN°7, TRQ, CDP, Corrector de postura">
         <meta name="author" content="CDP">
         <meta name="robots" content="noindex"> 
+        <link rel="stylesheet" href= "style.css">
+        <link rel="stylesheet" href="home-style.css">
     </head>
     <body>
         <header>
@@ -42,26 +43,53 @@
             </div>
         </div>
 
-        <div class="alumno-container">
-            <div class="alumno-img">
-                <div class="alumno-img__dim"></div>
-                <h3>Gian Keberlein</h3>
-                <p>Adulador Sexual</p>
+        <div class="about-container">
+            <h2 class="about-title"> ¿Quienes somos?</h2>
+            <p class="about-desc">
+                Somos alumnos de la EESTN°7, cursando el 7° año de la carrera en la especialidad aviónica. Los integrantes del grupo somos 
+                AZULA, Facundo; GALLOTO, Jonathan; KEBERLEIN, Gian Franco; SANJURJO, Bruno y VERGE, Ignacio.
+            </p>
+            <div class="cards-container">
+                <div class="alumno-card">
+                    <img class="rotate-left" src="images/gian.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Gian Keberlein</h3>
+                        <p>Desarrollador Líder, Electrónica y Diseño Web</p>
+                    </div>
+                </div>
+                <div class="alumno-card">
+                    <img src="images/nacho.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Ignacio Verge</h3>
+                        <p>Programación Web y Administración</p>
+                    </div>
+                </div>
+            </div>
+            <div class="cards-container">
+                <div class="alumno-card">
+                    <img src="images/jony.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Jonathan Galotto</h3>
+                        <p>Diseño y Modelado Físicos</p>
+                    </div>
+                </div>
+                <div class="alumno-card">
+                    <img class="rotate-right" src="images/facu.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Facundo Azula</h3>
+                        <p>Presentación y Electrónica</p>
+                    </div>
+                </div>
+                <div class="alumno-card">
+                    <img src="images/bruno.jpeg">
+                    <div class="alumno-img__dim">
+                        <h3>Bruno Sanjurjo</h3>
+                        <p>Electrónica</p>
+                    </div>
+                </div>
             </div>
         </div>
-
-        <div>
-            <h3 class="tit" id=h2> ¿Quienes somos?</h3>
-            <p class=txt> Somos alumnos de la EESTN°7, cursando el 7° año de la carrera en la especialidad aviónica. Los integrantes del grupo somos 
-                AZULA, Facundo; GALLOTO, Jonathan; KEBERLEIN, Gian Franco; SANJURJO, Bruno y VERGE, Ignacio. </p>
-        </div>
-        <div>
-            <img class="alm" src="images/gian.jpeg">
-            <img class="alm" src="images/facu.jpeg"> 
-            <img class="alm" src="images/jony.jpeg">
-            <img class="alm" src="images/nacho.jpeg">
-            <img class="alm" src="images/bruno.jpeg">
-        </div>
+                
         <h3 class=tit id=h3>¿De qué se trata CDP?</h3>
             <p class=txt>Nuestro proyecto consiste en una silla que, por medio de sensores y motores, calibra sus dimensiones en función de 
                 las características físicas del usuario para prevenir problemas traumatológicos y reumatológicos a largo plazo, 

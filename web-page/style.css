@@ -7,33 +7,6 @@
     font-family: 'Montserrat', sans-serif;
     font-size: 16px;
 }
-
-.tit { 
-    box-sizing: border-box;
-    background-color: var(--main-color);
-    padding: 10px;
-    margin:-4px;
-    font-family: sans-serif;
-    font-size: 24px;
-}
-.txt {
-    box-sizing: border-box;
-    background-color: #ec9a47 ;
-    padding-top: 0px;
-    padding-bottom: 9px;
-    padding-right: 9px;
-    padding-left: 20px;
-    margin: 0px;
-    font-family: sans-serif;
-    font-size: 16px;
-    line-height: 20px;
-}
-.alm {
-    image-resolution: 100px;
-}
-.alm:nth-child(1) {
-    transform: rotate(-90deg);
-}
 :root {
     --main-color: #e88e33;
     --darker-main-color: #e48a2f;

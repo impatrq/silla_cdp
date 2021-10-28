@@ -1,0 +1,200 @@
+.tit { 
+    box-sizing: border-box;
+    background-color: var(--main-color);
+    padding: 10px;
+    margin:-4px;
+    font-family: sans-serif;
+    font-size: 24px;
+}
+.txt {
+    box-sizing: border-box;
+    background-color: #ec9a47 ;
+    padding-top: 0px;
+    padding-bottom: 9px;
+    padding-right: 9px;
+    padding-left: 20px;
+    margin: 0px;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+}
+.alm {
+    image-resolution: 100px;
+}
+.alm:nth-child(1) {
+    transform: rotate(-90deg);
+}
+
+.about-container {
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 -5px 10px #00000077;
+}
+.about-title {
+    color: var(--main-color);
+    padding: 25px;
+    font-size: 3rem;
+    text-shadow: 1px 1px 3px black;
+}
+.about-desc {
+    padding: 25px;
+    font-size: 1.2rem;
+}
+
+.cards-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 400px;
+}
+.alumno-card {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    padding: 15px;
+    background: #fff;
+    box-shadow: 0 0 10px #00000099;
+    border-radius: 5px;
+}
+.alumno-card img {
+    width: 300px;
+}
+.alumno-card img.rotate-left {
+    transform: rotate(-90deg);
+    height: 300px;
+    width: auto;
+}
+.alumno-card img.rotate-right {
+    transform: rotate(90deg);
+    height: 300px;
+    width: auto;
+}
+.alumno-img__dim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #00000077;
+    opacity: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: #fff;
+    text-shadow: 1px 1px 2px #00000099;
+    text-align: center;
+}
+.alumno-img__dim:hover {
+    opacity: 1;
+}
+.alumno-img__dim h3 {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+}
+.alumno-img__dim p {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.1rem;
+}
+
+@media only screen and (max-width: 600px) {
+    .nav-container nav {
+        display: none;
+    }
+    .carousel {
+        width: 300px;
+    }
+    .carousel__images img {
+        width: 300px;
+    }
+
+    .hamburger {
+        padding: 0;
+        margin: 0;
+        visibility: visible;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 80px;
+        height: 80px;
+        transition: all .5s ease-in-out;
+    }
+    .hamburger__icon {
+        width: 40px;
+        height: 4px;
+        background: #000;
+        border-radius: 5px;
+        transition: all .3s ease-in-out;
+    }
+    .hamburger__icon::after, .hamburger__icon::before {
+        content: '';
+        position: absolute;
+        width: 40px;
+        height: 4px;
+        background: #000;
+        border-radius: 5px;
+        transition: all .3s ease-in-out;
+    }
+    .hamburger__icon::before {
+        transform: translateY(-12px);
+    }
+    .hamburger__icon::after {
+        transform: translateY(12px);
+    }
+
+    .hamburger.open .hamburger__icon {
+        transform: translateX(-50px);
+        background: transparent;
+    }
+    .hamburger.open .hamburger__icon::before {
+        transform: rotate(45deg) translate(35px, -35px);
+    }
+    .hamburger.open .hamburger__icon::after {
+        transform: rotate(-45deg) translate(35px, 35px);
+    }
+
+    .mobile-nav.is-active ~ .nav-container {
+        box-shadow: none;
+    }
+    .mobile-nav {
+        position: fixed;
+        top: 0;
+        left: 100%;
+        width: 100%;
+        height: 100vh;
+        min-height: 150px;
+        display: block;
+        z-index: 9;
+        background-color: var(--main-color);
+        padding-top: 90px;
+        transition: 0.4s;
+    }
+    .mobile-nav.is-active {
+        left: 0;
+    }
+    .mobile-nav a {
+        display: block;
+        height: 80px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        text-align: center;
+        margin: 10px 0;
+        padding: 24px 0;
+    }
+
+    body.disableScroll {
+        overflow: hidden;
+    }
+}
