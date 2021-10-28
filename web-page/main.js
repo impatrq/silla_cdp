@@ -12,6 +12,7 @@ let menuOpen = false;
 hamburger.addEventListener('click', button => {
     hamburger.classList.toggle('is-active');
     mobileNav.classList.toggle('is-active');
+    document.body.classList.toggle('disableScroll');
 
     if (!menuOpen) {
         hamburger.classList.add('open');
