@@ -1,0 +1,102 @@
+.about-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0 -5px 20px #00000099;
+}
+.about-title {
+    color: var(--main-color);
+    padding: 25px;
+    font-size: 3rem;
+    text-shadow: 1px 1px 3px black;
+}
+.about-desc {
+    padding: 0 25px 25px 25px;
+    font-size: 1.2rem;
+}
+.about-container hr {
+    width: 95%;
+    color: silver;
+    border-radius: 2px;
+    line-height: 5px;
+    text-align: center;
+}
+
+.cards-container {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+    height: 400px;
+}
+.alumno-card {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    height: 300px;
+    overflow: hidden;
+    padding: 15px;
+    background: #fff;
+    box-shadow: 0 0 10px #00000099;
+    border-radius: 10px;
+}
+.alumno-card img {
+    width: 300px;
+}
+.alumno-card img.rotate-left {
+    transform: rotate(-90deg);
+    height: 300px;
+    width: auto;
+}
+.alumno-card img.rotate-right {
+    transform: rotate(90deg);
+    height: 300px;
+    width: auto;
+}
+.alumno-img__dim {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #00000077;
+    opacity: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    color: #fff;
+    text-shadow: 1px 1px 2px #00000099;
+    text-align: center;
+}
+.alumno-img__dim:hover {
+    opacity: 1;
+}
+.alumno-img__dim h3 {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2rem;
+}
+.alumno-img__dim p {
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.1rem;
+}
+
+@media only screen and (max-width: 850px) {
+    .cards-container {
+        flex-wrap: wrap;
+        height: auto;
+    }
+    .alumno-card {
+        margin-bottom: 20px;
+    }
+}
