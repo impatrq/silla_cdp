@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href= "pag.css">
+        <link rel="stylesheet" href= "style.css">
         <title>CDP</title>
+        <script src="https://kit.fontawesome.com/30735d7de8.js" crossorigin="anonymous"></script>
         <meta charset="utf-8">
         <meta name="description" content="CDP es el proyecto tecnológico de séptimo año de un grupo de alumnos de la EEST°7">
         <meta name="keywords" content="ONIET, proyecto tecnológico, IMPA, EESTN°7, TRQ, CDP, Corrector de postura">
@@ -11,31 +12,38 @@
     </head>
     <body>
         <header>
-            <img src="images/cdp-header.png"> 
-            <h1 class=tit >Corrector de Postura</h1>
-            <nav> 
-                <ul>
-                    <li><a href="index.html">Inicio</a></li>
-                    <li><a href= "#h2">¿Quienes somos?</a></li>
-                    <li><a href= "#h3">¿De que se trata CDP?</a></li>
-                    <li><a href= "#h4">¿Cómo funciona CDP?</a></li>
-                    <li><a href= models.html>Modelado 3D</a> </li>
-                </ul>
-            </nav>
-        </header>
-        <h2 class="tit" id=h2> ¿Quienes somos?</h2>
-        <p> Somos alumnos de la EESTN°7 IMPA, cursando el 7° año de la carrera en la especialidad aviónica. Los integrantes del grupo somos 
-            AZULA, Facundo; GALLOTO, Jonathan; KEBERLEIN, Gian Franco; SANJURJO, Bruno y VERGE, Ignacio. </p>
+            <div class="nav-container">
+                <img src="images/cdp-header.png" alt="Logo CDP">
+                <nav>
+                    <a href="#h2">Quienes Somos</a>
+                    <a href="#h3">Sobre el Proyecto</a>
+                    <a href="#h4">Contacto</a>
+                    <a href="models.html">Modelos en 3D</a>
+                </nav>
+                <i class="fas fa-bars"></i>
+            </div>
+        <div>
+            <h3 class="tit" id=h2> ¿Quienes somos?</h3>
+            <p class=txt> Somos alumnos de la EESTN°7 IMPA, cursando el 7° año de la carrera en la especialidad aviónica. Los integrantes del grupo somos 
+                AZULA, Facundo; GALLOTO, Jonathan; KEBERLEIN, Gian Franco; SANJURJO, Bruno y VERGE, Ignacio. </p>
+        </div>
         <h3 class=tit id=h3>¿De qué se trata CDP?</h3>
-            <p>Nuestro proyecto consiste en una silla que, por medio de sensores y motores, calibra sus dimensiones en función de 
-            las características físicas del usuario para prevenir problemas traumatológicos y reumatológicos a largo plazo, 
-            consecuencias comunes de la mala postura durante actividades que impliquen estar sentados, como el uso prolongado 
-            del ordenador y el celular, el trabajo de oficina, entre otros.   </p>
-        <h4 class=tit id=h4>¿Cómo funciona CDP?</h4>
-            <p> La silla se inicia en una posición de "default" que permite al usuario sentarse e incorporarse. Una vez acomodado
-                en una postura correcta, el usuario elige la opción correspondiente y la silla fija sus partes para garantizar una postura
-                correcta y que corresponda a sus dimensiones.
-            </p>
-        
+            <p class=txt>Nuestro proyecto consiste en una silla que, por medio de sensores y motores, calibra sus dimensiones en función de 
+                las características físicas del usuario para prevenir problemas traumatológicos y reumatológicos a largo plazo, 
+                consecuencias comunes de la mala postura durante actividades que impliquen estar sentados, como el uso prolongado 
+                del ordenador y el celular, el trabajo de oficina, entre otros. </p>
+    <footer class="footer-container">
+        <div class="footer-container__social">
+            <p>Más sobre el proyecto en</p>
+                <div id=h4 class="footer-container__social-links">
+                    <i class="fas fa-icon"></i>
+                    <a href="https://github.com/impatrq/silla_cdp" target="_blank" rel="noopener noreferrer"><i class="fab fa-github-square"></i></a>
+                    <a href="#" target="_blank" rel="noopener noreferrer"><i class="fab fa-instagram-square"></i></a>
+                </div>
+        </div>
+        <hr>
+        <img src="images/logo-impa.png" alt="Logo IMPA TRQ">
+        <p class="footer-container__direccion">Otamendi y Juan B. Justo, Quilmes.</p>
+    </footer>
     </body>
 </html>
