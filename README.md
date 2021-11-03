@@ -3,7 +3,7 @@
 <img width=216 src="media/cdp-logo-remade-30s-squared.gif">
 <div align="center">
 
-|[Página Web](#silla-cdp)|[Contáctenos](#contacto)|
+|[Página Web](sillacdp.000webhostapp.com)|[Contáctenos](#contacto)|
 |---|---|
 
 </div>
@@ -12,7 +12,7 @@
 <summary><b>Lista de contenidos:</b></summary>
 <ol style="list-style-type:upper-roman">
 <li><a href="#información-del-proyecto">Información del proyecto.</a></li>
-<li><a href="#licencia">Licencia.</a></li>
+<li><a href="#licencias">Licencias.</a></li>
 <li><a href="#contacto">Contacto.</a></li>
 </ol>
 </details>
@@ -29,13 +29,18 @@ Uno de los **principales fuertes** de la silla es su capacidad para **acomodarse
 - Muestra de estados de los sensores y advertencia al detectar un posible error en la postura.
 - Interfaz de usuario facil de interactuar, ya que está integrada con una pantalla táctil.
 
-## Licencia
-Este proyecto está distribuido bajo la licencia MIT.
+## Licencias
+
+Los **iconos utilizados** en el proyecto fueron diseñados por [Freepik](https://www.freepik.com), desde [Flaticon](https://www.flaticon.es/). Para más información, visite [esta carpeta](./media/licenses) la cual contiene el archivo de la licencia.
+
+**Este proyecto está distribuido bajo la licencia MIT**.
 
 Para más informacion puede consultar [LICENSE](./LICENSE) o también este [enlace a Wikipedia](https://es.wikipedia.org/wiki/Licencia_MIT).
 
 ## Contacto
 Puede contactar con nosotros mediante los siguientes correos electrónicos:
+
+**Correo oficial del proyecto**: sillacdp@gmail.com
 
 **Desarrolladores de Software**:
 - *KEBERLEIN, Gian Franco*: gianfrancokeberlein@impatrq.com
