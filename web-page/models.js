@@ -22,3 +22,18 @@ carouselButtons.forEach(button => {
         carouselImages.style.transform = `translateX(${translateX}px)`;
     });
 });
+
+const viewers = document.querySelectorAll('.obj-viewer');
+const cbViewer = document.getElementById('cbViewer');
+
+cbViewer.addEventListener('click', () => {
+    if (cbViewer.checked) {
+        viewers.forEach((item) => {
+            item.style.display = 'block';
+        });
+    } else {
+        viewers.forEach((item) => {
+            item.style.display = 'none';
+        });
+    }
+});
