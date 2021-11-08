@@ -1,7 +1,7 @@
 import ujson as json
 from machine import Pin, time_pulse_us, UART
 from utime import sleep_ms, sleep_us
-from cdp_helper import setup_motor_config
+from cdp_helper import setup_motors_to_position
 
 class Usuario():
     json_motor_path = 'settings/motor_data.json'
@@ -106,7 +106,7 @@ class Usuario():
         pass
 
     def setup_config(self, motor_pines: dict, turn_counter):
-        setup_motor_config(self.dict_posicion, motor_pines, turn_counter)
+        setup_motors_to_position(motor_pines, turn_counter, self.dict_posicion)
 
     def add_config_to_json(self):
         """
