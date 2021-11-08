@@ -18,7 +18,52 @@ class Usuario():
 
         self.add_config_to_json()
 
-    def edit(self):
+    def edit_from_existing(self, new_name = None, new_icon = None):
+        if new_name is not None:
+            try:
+                with open(Usuario.json_motor_path, "r") as f:
+                    d_m = json.load(f)
+                with open(Usuario.json_user_path, "r") as f:
+                    d_u = json.load(f)
+
+                d_m[new_name] = self.dict_posicion
+                del d_m[self.nombre]
+
+                if new_icon is not None:
+                    d_u[new_name] = new_icon
+                    self.icon = new_icon
+                else:
+                    d_u[new_name] = self.icon
+                del d_u[self.nombre]
+
+                with open(Usuario.json_motor_path, "w") as f:
+                    json.dump(d_m, f)
+                with open(Usuario.json_user_path, "w") as f:
+                    json.dump(d_u, f)
+
+                self.nombre = new_name
+                return True
+            except ValueError:
+                print("Error cambiando nombre e icono.")
+                return False
+        elif new_icon is not None:
+            try:
+                with open(Usuario.json_user_path, "r") as f:
+                    d_u = json.load(f)
+
+                d_u[self.nombre] = new_icon
+                self.icon = new_icon
+
+                with open(Usuario.json_user_path, "w") as f:
+                    json.dump(d_u, f)
+                return True
+            except ValueError:
+                print("Error cambiando icono.")
+                return False
+        return False
+
+    @staticmethod
+    def edit_from_file():
         pass
 
     def remove(self):
