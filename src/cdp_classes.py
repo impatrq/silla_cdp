@@ -5,6 +5,7 @@ from cdp_helper import setup_motor_config
 
 class Usuario():
     instance_number = 1
+    json_path = 'settings/motor_data.json'
 
     def __init__(self, nombre, dict_posicion):
         """
@@ -13,8 +14,6 @@ class Usuario():
         """
         self.nombre = nombre
         self.dict_posicion = dict_posicion
-
-        self.json_path = "settings/motor_data.json"
 
         self.add_config_to_json()
 
@@ -33,7 +32,7 @@ class Usuario():
         """
         try:
             # Cargar json
-            with open(self.json_path, "r") as file:
+            with open(Usuario.json_path, "r") as file:
                 try:
                     d = json.load(file)
                 except ValueError:
@@ -44,10 +43,10 @@ class Usuario():
             d["Actuales"] = self.dict_posicion
 
             # Escribir en el json
-            with open(self.json_path, "w") as file:
+            with open(Usuario.json_path, "w") as file:
                 json.dump(d, file)
         except OSError:
-            with open(self.json_path, "w"):
+            with open(Usuario.json_path, "w"):
                 pass
             return self.add_config_to_json()
 
