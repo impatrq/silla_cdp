@@ -4,15 +4,16 @@ from utime import sleep_ms, sleep_us
 from cdp_helper import setup_motor_config
 
 class Usuario():
-    instance_number = 1
-    json_path = 'settings/motor_data.json'
+    json_motor_path = 'settings/motor_data.json'
+    json_user_path = 'settings/user_data.json'
 
-    def __init__(self, nombre, dict_posicion):
+    def __init__(self, nombre, icon_path, dict_posicion):
         """
             Crear una instancia con `nombre`, asignarle su configuracion para la silla
-            y guardar esa configuracion en el archivo `motor_data.json`.
+            y guardar esa configuracion en los archivos JSON correspondientes.
         """
         self.nombre = nombre
+        self.icon = icon_path
         self.dict_posicion = dict_posicion
 
         self.add_config_to_json()
@@ -28,27 +29,37 @@ class Usuario():
 
     def add_config_to_json(self):
         """
-            Reescribir el archivo `motor_data.json` para agregar la configuracion de este usuario.
+            Reescribir los archivos JSON para agregar la configuracion de este usuario.
+        """
+        # === Datos de motores === #
+        self.rewrite_data_json(Usuario.json_motor_path, self.dict_posicion, "Actuales")
+
+        # === Datos de perfil === #
+        self.rewrite_data_json(Usuario.json_user_path, self.icon, "Actual")
+
+    def rewrite_data_json(self, filepath, data_to_insert, place_to_insert):
+        """
+            Reescribir datos en un archivo JSON, si no existe crea el archivo y lo intenta de nuevo.
+
+            Devuelve True si es exitoso.
         """
         try:
-            # Cargar json
-            with open(Usuario.json_path, "r") as file:
+            with open(filepath, "r") as file:
                 try:
                     d = json.load(file)
                 except ValueError:
                     d = {}
 
-            # Agregar posiciones de este usuario
-            d[self.nombre] = self.dict_posicion
-            d["Actuales"] = self.dict_posicion
+            d[self.nombre] = data_to_insert
+            d[place_to_insert] = data_to_insert
 
-            # Escribir en el json
-            with open(Usuario.json_path, "w") as file:
+            with open(filepath, "w") as file:
                 json.dump(d, file)
+            return True
         except OSError:
-            with open(Usuario.json_path, "w"):
+            with open(filepath, "w"):
                 pass
-            return self.add_config_to_json()
+            return self.rewrite_data_json(filepath, data_to_insert, place_to_insert)
 
     def remove_config_from_json(self):
         pass
