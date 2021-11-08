@@ -63,8 +63,44 @@ class Usuario():
         return False
 
     @staticmethod
-    def edit_from_file():
-        pass
+    def edit_from_file(username, new_name = None, new_icon = None):
+        if new_name is not None:
+            try:
+                with open(Usuario.json_motor_path, "r") as f:
+                    d_m = json.load(f)
+                with open(Usuario.json_user_path, "r") as f:
+                    d_u = json.load(f)
+
+                d_m[new_name] = d_m[username]
+                del d_m[username]
+
+                if new_icon is not None:
+                    d_u[new_name] = new_icon
+                    del d_u[username]
+
+                with open(Usuario.json_motor_path, "w") as f:
+                    json.dump(d_m, f)
+                with open(Usuario.json_user_path, "w") as f:
+                    json.dump(d_u, f)
+
+                return True
+            except ValueError:
+                print("Error cambiando nombre e icono.")
+                return False
+        elif new_icon is not None:
+            try:
+                with open(Usuario.json_user_path, "r") as f:
+                    d_u = json.load(f)
+
+                d_u[username] = new_icon
+
+                with open(Usuario.json_user_path, "w") as f:
+                    json.dump(d_u, f)
+                return True
+            except ValueError:
+                print("Error cambiando icono.")
+                return False
+        return False
 
     def remove(self):
         pass
