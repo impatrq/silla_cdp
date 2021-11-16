@@ -2,7 +2,7 @@ import lvgl as lv
 import ujson as json
 from ili9XXX import ili9341
 from machine import Pin
-from cdp.classes import Sensor_US, ControlUART
+from cdp.classes import Sensor_US, ControlUART, Usuario
 
 # ===== FSM STATES ===== #
 STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
@@ -67,12 +67,14 @@ def load_users_from_file_global():
     new_list = []
 
     try:
-        with open("settings/motor_data.json", "r") as file:
+        with open(Usuario.json_motor_path, "r") as file:
             data = json.load(file)
+        with open(Usuario.json_user_path, 'r') as file:
+            icons = json.load(file)
         for user, config in data.items():
             if user == "Actuales":
                 continue
-            new_list.append(Usuario(user, config))
+            new_list.append(Usuario(user, icons[user], config))
         return new_list
     except OSError:
         print("motor_data.json is missing. Creating a new default one...")
