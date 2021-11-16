@@ -18,7 +18,7 @@ class Usuario():
 
         self.add_config_to_json()
 
-    def edit_from_existing(self, new_name = None, new_icon = None):
+    def edit(self, new_name = None, new_icon = None):
         if new_name is not None:
             try:
                 with open(Usuario.json_motor_path, "r") as f:
