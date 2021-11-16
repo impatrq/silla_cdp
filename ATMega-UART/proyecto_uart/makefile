@@ -7,7 +7,7 @@ CFLAGS=-Wall -g -Os -mmcu=${MCU} -DF_CPU=${F_CPU} -I.
 TARGET=proyecto_uart
 SRCS=main.c uart_hal.c adc_hal.c
 PROGRAMMER=usbasp
-LFUSE=0xDF
+LFUSE=0xFF
 
 all:
 	${CC} ${CFLAGS} -o ${TARGET}.bin ${SRCS} -lm
