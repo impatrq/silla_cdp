@@ -1,58 +1,168 @@
 import ujson as json
 from machine import Pin, time_pulse_us, UART
 from utime import sleep_ms, sleep_us
-from cdp_helper import setup_motor_config
+from cdp_helper import setup_motors_to_position
 
 class Usuario():
-    instance_number = 1
+    json_motor_path = 'settings/motor_data.json'
+    json_user_path = 'settings/user_data.json'
 
-    def __init__(self, nombre, dict_posicion):
+    def __init__(self, nombre, icon_path, dict_posicion):
         """
             Crear una instancia con `nombre`, asignarle su configuracion para la silla
-            y guardar esa configuracion en el archivo `motor_data.json`.
+            y guardar esa configuracion en los archivos JSON correspondientes.
         """
         self.nombre = nombre
+        self.icon = icon_path
         self.dict_posicion = dict_posicion
-
-        self.json_path = "settings/motor_data.json"
 
         self.add_config_to_json()
 
-    def edit(self):
-        pass
+    def edit(self, new_name = None, new_icon = None):
+        if new_name is not None:
+            try:
+                with open(Usuario.json_motor_path, "r") as f:
+                    d_m = json.load(f)
+                with open(Usuario.json_user_path, "r") as f:
+                    d_u = json.load(f)
 
-    def remove(self):
-        pass
+                d_m[new_name] = self.dict_posicion
+                del d_m[self.nombre]
+
+                if new_icon is not None:
+                    d_u[new_name] = new_icon
+                    self.icon = new_icon
+                else:
+                    d_u[new_name] = self.icon
+                del d_u[self.nombre]
+
+                with open(Usuario.json_motor_path, "w") as f:
+                    json.dump(d_m, f)
+                with open(Usuario.json_user_path, "w") as f:
+                    json.dump(d_u, f)
+
+                self.nombre = new_name
+                return True
+            except ValueError:
+                print("Error cambiando nombre e icono.")
+                return False
+        elif new_icon is not None:
+            try:
+                with open(Usuario.json_user_path, "r") as f:
+                    d_u = json.load(f)
+
+                d_u[self.nombre] = new_icon
+                self.icon = new_icon
+
+                with open(Usuario.json_user_path, "w") as f:
+                    json.dump(d_u, f)
+                return True
+            except ValueError:
+                print("Error cambiando icono.")
+                return False
+        return False
+
+    @staticmethod
+    def edit_from_file(username, new_name = None, new_icon = None):
+        if new_name is not None:
+            try:
+                with open(Usuario.json_motor_path, "r") as f:
+                    d_m = json.load(f)
+                with open(Usuario.json_user_path, "r") as f:
+                    d_u = json.load(f)
+
+                d_m[new_name] = d_m[username]
+                del d_m[username]
+
+                if new_icon is not None:
+                    d_u[new_name] = new_icon
+                    del d_u[username]
+
+                with open(Usuario.json_motor_path, "w") as f:
+                    json.dump(d_m, f)
+                with open(Usuario.json_user_path, "w") as f:
+                    json.dump(d_u, f)
+
+                return True
+            except ValueError:
+                print("Error cambiando nombre e icono.")
+                return False
+        elif new_icon is not None:
+            try:
+                with open(Usuario.json_user_path, "r") as f:
+                    d_u = json.load(f)
+
+                d_u[username] = new_icon
+
+                with open(Usuario.json_user_path, "w") as f:
+                    json.dump(d_u, f)
+                return True
+            except ValueError:
+                print("Error cambiando icono.")
+                return False
+        return False
+
+    def delete(self):
+        # Eliminar configuracion de posicion
+        self.remove_config_from_json(self.json_motor_path, self.nombre)
+
+        # Eliminar configuracion de perfil
+        self.remove_config_from_json(self.json_user_path, self.nombre)
+
+    @staticmethod
+    def delete_from_file(username):
+        # Eliminar configuracion de posicion
+        Usuario.remove_config_from_json(Usuario.json_motor_path, username)
+
+        # Eliminar configuracion de perfil
+        Usuario.remove_config_from_json(Usuario.json_user_path, username)
 
     def setup_config(self, motor_pines: dict, turn_counter):
-        setup_motor_config(self.dict_posicion, motor_pines, turn_counter)
+        setup_motors_to_position(motor_pines, turn_counter, self.dict_posicion)
 
     def add_config_to_json(self):
         """
-            Reescribir el archivo `motor_data.json` para agregar la configuracion de este usuario.
+            Reescribir los archivos JSON para agregar la configuracion de este usuario.
+        """
+        # === Datos de motores === #
+        self.rewrite_data_json(Usuario.json_motor_path, self.dict_posicion, "Actuales")
+
+        # === Datos de perfil === #
+        self.rewrite_data_json(Usuario.json_user_path, self.icon, "Actual")
+
+    def rewrite_data_json(self, filepath, data_to_insert, place_to_insert):
+        """
+            Reescribir datos en un archivo JSON, si no existe crea el archivo y lo intenta de nuevo.
+
+            Devuelve True si es exitoso.
         """
         try:
-            # Cargar json
-            with open(self.json_path, "r") as file:
+            with open(filepath, "r") as file:
                 try:
                     d = json.load(file)
                 except ValueError:
                     d = {}
 
-            # Agregar posiciones de este usuario
-            d[self.nombre] = self.dict_posicion
-            d["Actuales"] = self.dict_posicion
+            d[self.nombre] = data_to_insert
+            d[place_to_insert] = data_to_insert
 
-            # Escribir en el json
-            with open(self.json_path, "w") as file:
+            with open(filepath, "w") as file:
                 json.dump(d, file)
+            return True
         except OSError:
-            with open(self.json_path, "w"):
+            with open(filepath, "w"):
                 pass
-            return self.add_config_to_json()
+            return self.rewrite_data_json(filepath, data_to_insert, place_to_insert)
 
-    def remove_config_from_json(self):
-        pass
+    @staticmethod
+    def remove_config_from_json(where, which_key):
+        with open(where, 'r') as f:
+            d = json.load(f)
+
+        del d[which_key]
+
+        with open(where, 'w') as f:
+            json.dump(d, f)
 
     def __repr__(self):
         return f"Usuario '{self.nombre}'.\nConfig:\n{self.dict_posicion}"
