@@ -111,7 +111,11 @@ class Usuario():
 
     @staticmethod
     def delete_from_file(username):
-        pass
+        # Eliminar configuracion de posicion
+        Usuario.remove_config_from_json(Usuario.json_motor_path, username)
+
+        # Eliminar configuracion de perfil
+        Usuario.remove_config_from_json(Usuario.json_user_path, username)
 
     def setup_config(self, motor_pines: dict, turn_counter):
         setup_motors_to_position(motor_pines, turn_counter, self.dict_posicion)
