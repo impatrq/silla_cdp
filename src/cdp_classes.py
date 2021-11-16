@@ -102,7 +102,15 @@ class Usuario():
                 return False
         return False
 
-    def remove(self):
+    def delete(self):
+        # Eliminar configuracion de posicion
+        self.remove_config_from_json(self.json_motor_path, self.nombre)
+
+        # Eliminar configuracion de perfil
+        self.remove_config_from_json(self.json_user_path, self.nombre)
+
+    @staticmethod
+    def delete_from_file(username):
         pass
 
     def setup_config(self, motor_pines: dict, turn_counter):
@@ -142,8 +150,15 @@ class Usuario():
                 pass
             return self.rewrite_data_json(filepath, data_to_insert, place_to_insert)
 
-    def remove_config_from_json(self):
-        pass
+    @staticmethod
+    def remove_config_from_json(where, which_key):
+        with open(where, 'r') as f:
+            d = json.load(f)
+
+        del d[which_key]
+
+        with open(where, 'w') as f:
+            json.dump(d, f)
 
     def __repr__(self):
         return f"Usuario '{self.nombre}'.\nConfig:\n{self.dict_posicion}"
