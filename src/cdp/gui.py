@@ -24,6 +24,18 @@ def read_joystick_cb(drv, data):
 
     return False
 
+def select_profile_cb(drv, data):
+    pass
+
+def edit_profile_name_cb(drv, data):
+    pass
+
+def edit_profile_icon_cb(drv, data):
+    pass
+
+def delete_profile_cb(drv, data):
+    pass
+
 # ===== FUNCIONES ===== #
 def show_calib_instructions(which: str):
     print(which)
@@ -66,6 +78,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 150)
     btn.set_width(200)
+    lv.btn.add_event_cb(btn, select_profile_cb, lv.EVENT.ALL, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.OK + "  Seleccionar perfil")
     lv.group_t.add_obj(group, btn)
@@ -73,6 +86,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 190)
     btn.set_width(200)
+    lv.btn.add_event_cb(btn, edit_profile_name_cb, lv.EVENT.ALL, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.EDIT + "  Editar nombre")
     lv.group_t.add_obj(group, btn)
@@ -80,6 +94,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 230)
     btn.set_width(200)
+    lv.btn.add_event_cb(btn, edit_profile_icon_cb, lv.EVENT.ALL, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.EDIT + "  Editar icono")
     lv.group_t.add_obj(group, btn)
@@ -87,6 +102,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 270)
     btn.set_width(200)
+    lv.btn.add_event_cb(btn, delete_profile_cb, lv.EVENT.ALL, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.TRASH + "  Borrar perfil")
     lv.group_t.add_obj(group, btn)
