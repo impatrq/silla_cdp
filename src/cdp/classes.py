@@ -1,7 +1,7 @@
 import ujson as json
 from machine import Pin, time_pulse_us, UART
 from utime import sleep_ms, sleep_us
-from cdp_helper import setup_motors_to_position
+from cdp.helper import setup_motors_to_position
 
 class Usuario():
     json_motor_path = 'settings/motor_data.json'

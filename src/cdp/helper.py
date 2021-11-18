@@ -2,8 +2,8 @@
 import json
 from machine import Pin
 from utime import sleep_ms
-import cdp_gui as gui
-from cdp_classes import ControlUART, Sensor_US
+from cdp.gui import show_calib_instructions, update_sensor_state
+from cdp.classes import ControlUART, Sensor_US
 
 # ==================== SENSORES ==================== #
 
@@ -52,7 +52,7 @@ def sensor_check_all_states(comm: ControlUART, sensors: list, v_update: bool = F
     # Si se le pasa este parámetro, llamar a la funcion para actualizar la pantalla.
     if v_update:
         #TODO: Provisional hasta tener la verdadera funcion
-        gui.update_sensor_state()
+        update_sensor_state()
 
     return i >= well_sit_cond
 
@@ -170,12 +170,12 @@ def start_calibration(comm: ControlUART, sensor_us: Sensor_US, calibration_data:
     new_pos = {}
 
     # Esperar por confirmacion de inicio
-    gui.show_calib_instructions('bar')
+    show_calib_instructions('bar')
     wait_for_interrupt_sensor(comm, 'bar')
 
     # Formato config => [motor_pines[], sensors[type, str, min, max], mux_code, max_pos]
     for motor, config in calibration_data.items():
-        gui.show_calib_instructions(motor)
+        show_calib_instructions(motor)
         new_pos[motor] = move_until_finished(comm, turn_counter, *config, sensor_us)
 
     # Devolver dict con posiciones
