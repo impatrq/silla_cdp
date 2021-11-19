@@ -7,10 +7,10 @@ from imagetools import get_png_info, open_png
 def read_joystick_cb(drv, data):
     read = uart.send_and_receive("askswi").split('-')
 
-    if read[0] > 900:
+    if read[0] > 954:
         print('Right')
         data.key = lv.KEY.RIGHT
-    elif read[0] < 100:
+    elif read[0] < 50:
         print('Left')
         data.key = lv.KEY.LEFT
     else:
@@ -18,8 +18,10 @@ def read_joystick_cb(drv, data):
 
     if read[2] == 0:
         print('Pressed')
+        data.key = lv.KEY.ENTER
         data.state = lv.INDEV_STATE.PRESSED
     else:
+        data.key = 0
         data.state = lv.INDEV_STATE.RELEASED
 
     return False
