@@ -204,3 +204,32 @@ def draw_profilewait_screen(scr, username, usericon):
         raw_dsc.data = dsc.img_data
         raw_dsc.data_size = raw_dsc.header.w * raw_dsc.header.h * lv.color_t.__SIZE__
         img.set_src(raw_dsc)
+
+def draw_users_screen(scr, users):
+    h = lv.label(scr)
+    h.set_pos(90, 15)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text("Usuarios")
+
+    h = lv.label(scr)
+    h.set_pos(64, 75)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text("Seleccione uno")
+
+    panel = lv.obj(scr)
+    panel.set_pos(10, 100)
+    panel.set_size(220, 190)
+    panel.set_scroll_snap_x(lv.SCROLL_SNAP.CENTER)
+    panel.set_flex_flow(lv.FLEX_FLOW.ROW)
+
+    for i, user in enumerate(users):
+        btn = lv.btn(panel)
+        btn.set_size(150, 150)
+        btn.center()
+        lv.btn.add_event_cb(btn, lambda e: profile_cb(e, None, None))
+        label = lv.label(btn)
+        label.set_text(user)
+        label.center()
+        group.add_obj(btn)
+
+    panel.update_snap(lv.ANIM.ON)
