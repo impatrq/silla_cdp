@@ -29,8 +29,8 @@ void uart_init(uint32_t baudrate, uint8_t double_speed) {
 	
 	baudrate = (F_CPU/(speed*baudrate)) - 1;
 	
-	UBRR0H = (uint8_t)(baudrate >> 8);
-	UBRR0L = (uint8_t)(baudrate & 0xFF);
+	UBRR0H = (baudrate & 0x0F00) >> 8;
+	UBRR0L = (baudrate & 0x00FF);
 	
 	UCSR0B = (1 << TXEN0) | (1 << RXEN0) | (1 << TXCIE0) | (1 << RXCIE0);
 	UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);

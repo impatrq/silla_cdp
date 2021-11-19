@@ -11,4 +11,20 @@ micropy.json
 .pylintrc
 
 # Archivos de Atmel Studio
-/ATMega-UART/.vs
+/ATMega-UART/*
+
+!/ATMega-UART/proyecto_uart/
+/ATMega-UART/proyecto_uart/*
+
+!/ATMega-UART/proyecto_uart/adc_hal.c
+!/ATMega-UART/proyecto_uart/adc_hal.h
+!/ATMega-UART/proyecto_uart/main.c
+!/ATMega-UART/proyecto_uart/makefile
+!/ATMega-UART/proyecto_uart/uart_hal.c
+!/ATMega-UART/proyecto_uart/uart_hal.h
+
+!/ATMega-UART/proyecto_uart/Debug/
+/ATMega-UART/proyecto_uart/Debug/*
+
+!/ATMega-UART/proyecto_uart/Debug/proyecto_uart.hex
+!/ATMega-UART/proyecto_uart/Debug/proyecto_uart.elf
