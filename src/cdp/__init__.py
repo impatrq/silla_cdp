@@ -3,6 +3,7 @@ import ujson as json
 from ili9XXX import ili9341
 from machine import Pin
 from cdp.classes import Sensor_US, ControlUART, Usuario
+from cdp.gui import read_joystick_cb
 
 # ===== FSM STATES ===== #
 STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
@@ -37,9 +38,21 @@ _global_config = {}
 # ===== LISTA DE USUARIOS ===== #
 _users_list = []
 
-# ===== DISPLAY LVGL ===== #
+# ===== LVGL ===== #
 lv.init()
 display = ili9341(mosi=23, miso=19, clk=18, dc=21, cs=5, rst=22, power=-1, backlight=-1)
+
+indev = lv.indev_drv_t()
+indev.init()
+indev.type = lv.INDEV_TYPE.ENCODER
+indev.read_cb = read_joystick_cb
+joystick = indev.register()
+
+group = lv.group_create()
+lv.indev_t.set_group(joystick, group)
+
+scr = lv.obj()
+lv.scr_load(scr)
 
 # ===== FUNCIONES ===== #
 def load_config_from_file_global():
