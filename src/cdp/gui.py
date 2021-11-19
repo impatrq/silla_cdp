@@ -1,5 +1,6 @@
 import lvgl as lv
 from cdp import uart, group
+from utime import sleep_ms
 import lodepng as png
 from imagetools import get_png_info, open_png
 
@@ -10,9 +11,13 @@ def read_joystick_cb(drv, data):
     if read[0] > 954:
         print('Right')
         data.key = lv.KEY.RIGHT
+        group.focus_next()
+        sleep_ms(100)
     elif read[0] < 50:
         print('Left')
         data.key = lv.KEY.LEFT
+        group.focus_prev()
+        sleep_ms(100)
     else:
         data.key = 0
 
