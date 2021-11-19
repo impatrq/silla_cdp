@@ -276,3 +276,18 @@ def draw_calibname_screen(scr):
     g.add_obj(name_ta)
     g.add_obj(btn)
     g.add_obj(kb)
+
+def draw_calibname_screen():
+    h = lv.label(scr)
+    h.set_pos(95, 16)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text("C.D.P.")
+
+    s = lv.spinner(scr, 1000, 60)
+    s.set_size(100, 100)
+    s.center()
+
+    h = lv.label(scr)
+    h.set_pos(85, 220)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text("Cargando...")
