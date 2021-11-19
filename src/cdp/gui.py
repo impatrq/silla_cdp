@@ -24,6 +24,9 @@ def read_joystick_cb(drv, data):
 
     return False
 
+def profile_cb(drv, data):
+    pass
+
 def select_profile_cb(drv, data):
     pass
 
@@ -106,3 +109,28 @@ def draw_edit_screen(username, usericon):
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.TRASH + "  Borrar perfil")
     lv.group_t.add_obj(group, btn)
+
+def draw_editname_screen():
+    h = lv.label(scr)
+    h.set_pos(65, 16)
+    h.set_text("Editar nombre")
+
+    name_ta = lv.textarea(scr)
+    name_ta.set_placeholder_text("Nuevo nombre")
+    name_ta.set_one_line(True)
+    name_ta.set_pos(20, 45)
+    name_ta.set_width(200)
+
+    btn = lv.btn(scr)
+    btn.set_pos(65, 110)
+    lv.btn.add_event_cb(btn, profile_cb, lv.EVENT.ALL, None)
+    label = lv.label(btn)
+    label.set_text("Volver atras")
+
+    kb = lv.keyboard(scr)
+    kb.set_size(240, 320 // 2)
+    kb.set_textarea(name_ta)
+
+    group.add_obj(name_ta)
+    group.add_obj(btn)
+    group.add_obj(kb)
