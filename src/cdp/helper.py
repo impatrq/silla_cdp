@@ -2,7 +2,7 @@
 import json
 from machine import Pin
 from utime import sleep_ms
-from cdp.gui import show_calib_instructions, update_sensor_state
+from cdp.gui import draw_calib_screen, update_sensor_state
 from cdp.classes import ControlUART, Sensor_US
 
 # ==================== SENSORES ==================== #
@@ -170,12 +170,12 @@ def start_calibration(comm: ControlUART, sensor_us: Sensor_US, calibration_data:
     new_pos = {}
 
     # Esperar por confirmacion de inicio
-    show_calib_instructions('bar')
+    draw_calib_screen('bar')
     wait_for_interrupt_sensor(comm, 'bar')
 
     # Formato config => [motor_pines[], sensors[type, str, min, max], mux_code, max_pos]
     for motor, config in calibration_data.items():
-        show_calib_instructions(motor)
+        draw_calib_screen(motor)
         new_pos[motor] = move_until_finished(comm, turn_counter, *config, sensor_us)
 
     # Devolver dict con posiciones

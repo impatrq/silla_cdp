@@ -50,9 +50,6 @@ def delete_profile_cb(event, username, usericon):
     pass
 
 # ===== FUNCIONES ===== #
-def show_calib_instructions(which: str):
-    print(which)
-
 def update_sensor_state():
     pass
 
@@ -233,3 +230,64 @@ def draw_users_screen(scr, users):
         group.add_obj(btn)
 
     panel.update_snap(lv.ANIM.ON)
+
+def draw_calib_screen(scr, which):
+    h = lv.label(scr)
+    h.set_pos(75,16)
+    h.set_text("Calibrando...")
+
+    i = lv.label(scr)
+    i.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+
+    if which == 'bar':
+        i.set_pos(40, 120)
+        i.set_text("Instrucciones de barra")
+    elif which == 'assheight':
+        i.set_pos(55, 120)
+        i.set_text("Instrucciones de \naltura de asiento")
+    elif which == 'assdepth':
+        i.set_pos(35, 120)
+        i.set_text("Instrucciones de \nprofundidad de asiento")
+    elif which == 'lumbar':
+        i.set_pos(30, 120)
+        i.set_text("Instrucciones de lumbar")
+    elif which == 'cabezal':
+        i.set_pos(30, 120)
+        i.set_text("Instrucciones de cabezal")
+    elif which == 'apbrazo':
+        i.set_pos(10, 120)
+        i.set_text("Instrucciones de apoyabrazos")
+
+def draw_calibname_screen(scr):
+    h = lv.label(scr)
+    h.set_pos(65, 16)
+    h.set_text("Elegir nombre")
+
+    name_ta = lv.textarea(scr)
+    name_ta.set_placeholder_text("Nuevo perfil")
+    name_ta.set_one_line(True)
+    name_ta.set_pos(20, 45)
+    name_ta.set_width(200)
+
+    kb = lv.keyboard(scr)
+    kb.set_size(240, 320 // 2)
+    kb.set_textarea(name_ta)
+
+    g.add_obj(name_ta)
+    g.add_obj(btn)
+    g.add_obj(kb)
+
+def draw_calibname_screen():
+    h = lv.label(scr)
+    h.set_pos(95, 16)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text("C.D.P.")
+
+    s = lv.spinner(scr, 1000, 60)
+    s.set_size(100, 100)
+    s.center()
+
+    h = lv.label(scr)
+    h.set_pos(85, 220)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text("Cargando...")
