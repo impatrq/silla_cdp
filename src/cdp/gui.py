@@ -26,19 +26,22 @@ def read_joystick_cb(drv, data):
 
     return False
 
-def users_cb(drv, data):
+def users_cb(event):
     pass
 
-def profile_cb(drv, data):
+def profile_cb(event, username, usericon):
     pass
 
-def select_profile_cb(drv, data):
+def delete_user_cb(event, username):
     pass
 
-def edit_profile_name_cb(drv, data):
+def select_profile_cb(event, username):
     pass
 
-def delete_profile_cb(drv, data):
+def edit_profile_name_cb(event, username, usericon):
+    pass
+
+def delete_profile_cb(event, username, usericon):
     pass
 
 # ===== FUNCIONES ===== #
@@ -83,7 +86,7 @@ def draw_edit_screen(scr, username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 150)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, select_profile_cb, lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: select_profile_cb(e, username), lv.EVENT.ALL, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.OK + "  Seleccionar perfil")
     lv.group_t.add_obj(group, btn)
@@ -91,7 +94,7 @@ def draw_edit_screen(scr, username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 190)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, edit_profile_name_cb, lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: edit_profile_name_cb(e, username, usericon), lv.EVENT.ALL, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.EDIT + "  Editar nombre")
     lv.group_t.add_obj(group, btn)
@@ -99,7 +102,7 @@ def draw_edit_screen(scr, username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 230)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, users_cb, lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: users_cb(e), lv.EVENT.ALL, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.LEFT + "  Volver atras")
     lv.group_t.add_obj(group, btn)
@@ -107,12 +110,12 @@ def draw_edit_screen(scr, username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 270)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, delete_profile_cb, lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: delete_profile_cb(e, username, usericon), lv.EVENT.ALL, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.TRASH + "  Borrar perfil")
     lv.group_t.add_obj(group, btn)
 
-def draw_editname_screen(scr):
+def draw_editname_screen(scr, username, usericon):
     h = lv.label(scr)
     h.set_pos(65, 16)
     h.set_text("Editar nombre")
@@ -125,7 +128,7 @@ def draw_editname_screen(scr):
 
     btn = lv.btn(scr)
     btn.set_pos(65, 110)
-    lv.btn.add_event_cb(btn, profile_cb, lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: profile_cb(e, username, usericon), lv.EVENT.ALL, None)
     label = lv.label(btn)
     label.set_text("Volver atras")
 
@@ -136,3 +139,28 @@ def draw_editname_screen(scr):
     group.add_obj(name_ta)
     group.add_obj(btn)
     group.add_obj(kb)
+
+def draw_delete_screen(scr, username, usericon):
+    h = lv.label(scr)
+    h.set_pos(75, 16)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text(f"Borrar perfil\n\n{lv.SYMBOL.WARNING + '  ' + username + '  ' + lv.SYMBOL.WARNING}")
+
+    h = lv.label(scr)
+    h.set_pos(25, 80)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text("Esta accion es irreversible.\nConfirme su eleccion.")
+
+    btn = lv.btn(scr)
+    btn.set_pos(20, 140)
+    lv.btn.add_event_cb(btn, lambda e: delete_user_cb(e, username), lv.EVENT.ALL, None)
+    label = lv.label(btn)
+    label.set_text("Borrar")
+    group.add_obj(btn)
+
+    btn = lv.btn(scr)
+    btn.set_pos(132, 140)
+    lv.btn.add_event_cb(btn, lambda e: profile_cb(e, username, usericon), lv.EVENT.ALL, None)
+    label = lv.label(btn)
+    label.set_text("Cancelar")
+    group.add_obj(btn)
