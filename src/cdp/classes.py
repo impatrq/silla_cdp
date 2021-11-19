@@ -1,7 +1,7 @@
 import ujson as json
 from machine import Pin, time_pulse_us, UART
 from utime import sleep_ms, sleep_us
-from cdp.helper import setup_motors_to_position
+#from cdp.helper import setup_motors_to_position
 
 class Usuario():
     json_motor_path = 'settings/motor_data.json'
@@ -210,12 +210,13 @@ class Sensor_US:
         return (lectura / 2) / 29.1
 
 class StateMachine():
-    def __init__(self, firstState: tuple):
+    def __init__(self, firstState: tuple = None):
         self.__executer = {}
-        self.__firstState = firstState[0]
-        self.__state = firstState[0]
+        if firstState:
+            self.__firstState = firstState[0]
+            self.__state = firstState[0]
 
-        self.__executer[firstState[0]] = firstState[1]
+            self.__executer[firstState[0]] = firstState[1]
 
     @property
     def State(self):
@@ -230,7 +231,10 @@ class StateMachine():
         return self.__executer
 
     def change_first_state(self, new_state: tuple):
-        del self.__executer[self.__firstState]
+        try:
+            del self.__executer[self.__firstState]
+        except:
+            print("No hay primer estado")
         self.__executer[new_state[0]] = new_state[1]
         self.__firstState = new_state[0]
 

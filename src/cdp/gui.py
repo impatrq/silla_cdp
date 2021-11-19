@@ -1,37 +1,21 @@
 import lvgl as lv
-from cdp import uart, group
+import ujson as json
+from cdp import group, scr
+from cdp.classes import Usuario
 from utime import sleep_ms
 import lodepng as png
 from imagetools import get_png_info, open_png
 
 # ===== CALLBACKS ===== #
-def read_joystick_cb(drv, data):
-    read = uart.send_and_receive("askswi").split('-')
-
-    if read[0] > 954:
-        print('Right')
-        data.key = lv.KEY.RIGHT
-        group.focus_next()
-        sleep_ms(100)
-    elif read[0] < 50:
-        print('Left')
-        data.key = lv.KEY.LEFT
-        group.focus_prev()
-        sleep_ms(100)
-    else:
-        data.key = 0
-
-    if read[2] == 0:
-        print('Pressed')
-        data.key = lv.KEY.ENTER
-        data.state = lv.INDEV_STATE.PRESSED
-    else:
-        data.key = 0
-        data.state = lv.INDEV_STATE.RELEASED
-
-    return False
 
 def users_cb(event):
+    pass
+
+def calibration_cb(event):
+    pass
+
+def calib_name_cb(event, new_pos):
+    # Recibir posicion y nombre, guardarlo en el archivo
     pass
 
 def profile_cb(event, username, usericon):
@@ -49,13 +33,9 @@ def edit_profile_name_cb(event, username, usericon):
 def delete_profile_cb(event, username, usericon):
     pass
 
-# ===== FUNCIONES ===== #
-def update_sensor_state():
-    pass
-
 # ===== DIBUJAR PANTALLAS ===== #
 
-def draw_edit_screen(scr, username, usericon):
+def draw_edit_screen(username, usericon):
     h1 = lv.label(scr)
     h1.set_pos(96, 16)
     h1.set_text("Perfil")
@@ -117,7 +97,7 @@ def draw_edit_screen(scr, username, usericon):
     label.set_text(lv.SYMBOL.TRASH + "  Borrar perfil")
     lv.group_t.add_obj(group, btn)
 
-def draw_editname_screen(scr, username, usericon):
+def draw_editname_screen(username, usericon):
     h = lv.label(scr)
     h.set_pos(65, 16)
     h.set_text("Editar nombre")
@@ -142,7 +122,7 @@ def draw_editname_screen(scr, username, usericon):
     group.add_obj(btn)
     group.add_obj(kb)
 
-def draw_delete_screen(scr, username, usericon):
+def draw_delete_screen(username, usericon):
     h = lv.label(scr)
     h.set_pos(75, 16)
     h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
@@ -167,7 +147,7 @@ def draw_delete_screen(scr, username, usericon):
     label.set_text("Cancelar")
     group.add_obj(btn)
 
-def draw_profilewait_screen(scr, username, usericon):
+def draw_profilewait_screen(username, usericon):
     h = lv.label(scr)
     h.set_pos(70, 16)
     h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
@@ -202,7 +182,9 @@ def draw_profilewait_screen(scr, username, usericon):
         raw_dsc.data_size = raw_dsc.header.w * raw_dsc.header.h * lv.color_t.__SIZE__
         img.set_src(raw_dsc)
 
-def draw_users_screen(scr, users):
+def draw_users_screen(users):
+    lv.obj.clean(scr)
+    
     h = lv.label(scr)
     h.set_pos(90, 15)
     h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
@@ -223,15 +205,27 @@ def draw_users_screen(scr, users):
         btn = lv.btn(panel)
         btn.set_size(150, 150)
         btn.center()
-        lv.btn.add_event_cb(btn, lambda e: profile_cb(e, None, None))
+        lv.btn.add_event_cb(btn, lambda e: profile_cb(e, None, None), lv.EVENT.ALL, None)
         label = lv.label(btn)
         label.set_text(user)
         label.center()
         group.add_obj(btn)
 
-    panel.update_snap(lv.ANIM.ON)
+    btn = lv.btn(panel)
+    btn.set_size(150, 150)
+    btn.center()
+    lv.btn.add_event_cb(btn, lambda e: calibration_cb(e), lv.EVENT.ALL, None)
+    label = lv.label(btn)
+    label.set_text(lv.SYMBOL.PLUS)
+    label.center()
+    group.add_obj(btn)
 
-def draw_calib_screen(scr, which):
+    panel.update_snap(lv.ANIM.ON)
+    lv.scr_load(scr)
+
+def draw_calib_screen(which):
+    lv.obj.clean(scr)
+
     h = lv.label(scr)
     h.set_pos(75,16)
     h.set_text("Calibrando...")
@@ -257,8 +251,12 @@ def draw_calib_screen(scr, which):
     elif which == 'apbrazo':
         i.set_pos(10, 120)
         i.set_text("Instrucciones de apoyabrazos")
+    
+    lv.scr_load(scr)
 
-def draw_calibname_screen(scr):
+def draw_calibname_screen(new_pos):
+    lv.obj.clean(scr)
+    
     h = lv.label(scr)
     h.set_pos(65, 16)
     h.set_text("Elegir nombre")
@@ -277,7 +275,11 @@ def draw_calibname_screen(scr):
     g.add_obj(btn)
     g.add_obj(kb)
 
-def draw_calibname_screen():
+    lv.scr_load(scr)
+
+def draw_loading_screen():
+    lv.obj.clean(scr)
+
     h = lv.label(scr)
     h.set_pos(95, 16)
     h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
@@ -291,3 +293,5 @@ def draw_calibname_screen():
     h.set_pos(85, 220)
     h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
     h.set_text("Cargando...")
+
+    lv.scr_load(scr)

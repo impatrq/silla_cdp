@@ -1,19 +1,40 @@
 import lvgl as lv
 import ujson as json
 from ili9XXX import ili9341
-from machine import Pin
-from cdp.classes import Sensor_US, ControlUART, Usuario
-from cdp.gui import read_joystick_cb
+from machine import Pin, ADC
+from utime import sleep_ms
 
-# ===== FSM STATES ===== #
-STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
+# ===== Inicializar variables ===== #
+sensor_us = None
+uart = None
+fsm = None
+group = None
+scr = None
 
-# ===== CONTROL US Y UART ===== #
+# ===== CONFIGURACION PROGRAMA ===== #
+_global_config = {}
+
+# ===== LISTA DE USUARIOS ===== #
+_users_list = []
+
+from cdp.classes import Sensor_US, ControlUART, Usuario, StateMachine
+
+# ===== OBJETOS DE CONTROL ===== #
 sensor_us = Sensor_US(16, 36)
 uart = ControlUART(9600, 17, 34)
+fsm = StateMachine()
 
 # ===== PINES ===== #
-pin_encoder = 35
+vrx = ADC(Pin(32, Pin.IN))
+vry = ADC(Pin(33, Pin.IN))
+sw = Pin(25, Pin.IN, Pin.PULL_UP)
+
+vrx.width(ADC.WIDTH_10BIT)
+vry.width(ADC.WIDTH_10BIT)
+vrx.atten(ADC.ATTN_11DB)
+vry.atten(ADC.ATTN_11DB)
+
+turn_counter = Pin(35, Pin.IN)
 
 motor_pines = {
     "Adelante": {
@@ -32,15 +53,36 @@ motor_pines = {
     }
 }
 
-# ===== CONFIGURACION PROGRAMA ===== #
-_global_config = {}
-
-# ===== LISTA DE USUARIOS ===== #
-_users_list = []
-
 # ===== LVGL ===== #
 lv.init()
 display = ili9341(mosi=23, miso=19, clk=18, dc=21, cs=5, rst=22, power=-1, backlight=-1)
+
+def read_joystick_cb(drv, data):
+    read = vrx.read()
+    press = sw.value()
+
+    if read > 954:
+        print('Right')
+        data.key = lv.KEY.RIGHT
+        group.focus_next()
+        sleep_ms(150)
+    elif read < 50:
+        print('Left')
+        data.key = lv.KEY.LEFT
+        group.focus_prev()
+        sleep_ms(150)
+    else:
+        data.key = 0
+
+    if press == 0:
+        print('Pressed')
+        data.key = lv.KEY.ENTER
+        data.state = lv.INDEV_STATE.PRESSED
+    else:
+        data.key = 0
+        data.state = lv.INDEV_STATE.RELEASED
+
+    return False
 
 indev = lv.indev_drv_t()
 indev.init()
@@ -52,17 +94,16 @@ group = lv.group_create()
 lv.indev_t.set_group(joystick, group)
 
 scr = lv.obj()
-lv.scr_load(scr)
 
 # ===== FUNCIONES ===== #
 def load_config_from_file_global():
     try:
-        with open("settings/cdp_config.json", "r") as file:
+        with open("cdp/settings/cdp_config.json", "r") as file:
             _global_config = json.load(file)
         return _global_config
     except OSError:
         print("cdp_config.json is missing. Creating a new default one...")
-        with open("settings/cdp_config.json", "w") as file:
+        with open("cdp/settings/cdp_config.json", "w") as file:
             c = {
                 "first_time_open" : True,
                 'calibration_data' : {
@@ -80,9 +121,9 @@ def load_users_from_file_global():
     new_list = []
 
     try:
-        with open(Usuario.json_motor_path, "r") as file:
+        with open('cdp/' + Usuario.json_motor_path, "r") as file:
             data = json.load(file)
-        with open(Usuario.json_user_path, 'r') as file:
+        with open('cdp/' + Usuario.json_user_path, 'r') as file:
             icons = json.load(file)
         for user, config in data.items():
             if user == "Actuales":
@@ -91,7 +132,7 @@ def load_users_from_file_global():
         return new_list
     except OSError:
         print("motor_data.json is missing. Creating a new default one...")
-        with open("settings/motor_data.json", "w") as file:
+        with open("cdp/settings/motor_data.json", "w") as file:
             c = {
                 "Actuales" : {
                     "cabezal" : 0,
@@ -108,9 +149,9 @@ def set_motorpin_output():
     for pin_list in motor_pines.values():
         for value in pin_list.values():
             for index, pin in enumerate(value):
-                value[index] = Pin(pin, Pin.OUT, Pin.PULL_DOWN, 0)
+                value[index] = Pin(pin, Pin.OUT)
 
 # ===== INIT ===== #
 _global_config = load_config_from_file_global()
 _users_list = load_users_from_file_global()
-set_motorpin_output()
+# set_motorpin_output()
