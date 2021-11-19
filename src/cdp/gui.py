@@ -35,7 +35,7 @@ def profile_cb(event, username, usericon):
 def delete_user_cb(event, username):
     pass
 
-def select_profile_cb(event, username):
+def select_profile_cb(event, username, usericon):
     pass
 
 def edit_profile_name_cb(event, username, usericon):
@@ -164,3 +164,38 @@ def draw_delete_screen(scr, username, usericon):
     label = lv.label(btn)
     label.set_text("Cancelar")
     group.add_obj(btn)
+
+def draw_profilewait_screen(scr, username, usericon):
+    h = lv.label(scr)
+    h.set_pos(70, 16)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text("Configuracion")
+
+    h = lv.label(scr)
+    h.set_pos(25, 120)
+    h.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+    h.set_text("Por favor, espere mientras\n se configura este perfil:")
+
+    h = lv.label(scr)
+    h.set_pos(145, 208)
+    h.set_text(username)
+
+    # Cargar imagen png
+    with open(usericon, 'rb') as i:
+        png_data = i.read()
+
+    png_img_dsc = lv.img_dsc_t({
+        'data_size': len(png_data),
+        'data': png_data
+    })
+
+    img = lv.img(scr)
+    img.set_pos(40, 200)
+    img.set_zoom(256+256)
+    raw_dsc = lv.img_dsc_t()
+    get_png_info(None, png_img_dsc, raw_dsc.header)
+    dsc = lv.img_decoder_dsc_t({'src': png_img_dsc})
+    if open_png(None, dsc) == lv.RES.OK:
+        raw_dsc.data = dsc.img_data
+        raw_dsc.data_size = raw_dsc.header.w * raw_dsc.header.h * lv.color_t.__SIZE__
+        img.set_src(raw_dsc)
