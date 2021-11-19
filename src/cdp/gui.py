@@ -257,3 +257,22 @@ def draw_calib_screen(scr, which):
     elif which == 'apbrazo':
         i.set_pos(10, 120)
         i.set_text("Instrucciones de apoyabrazos")
+
+def draw_calibname_screen(scr):
+    h = lv.label(scr)
+    h.set_pos(65, 16)
+    h.set_text("Elegir nombre")
+
+    name_ta = lv.textarea(scr)
+    name_ta.set_placeholder_text("Nuevo perfil")
+    name_ta.set_one_line(True)
+    name_ta.set_pos(20, 45)
+    name_ta.set_width(200)
+
+    kb = lv.keyboard(scr)
+    kb.set_size(240, 320 // 2)
+    kb.set_textarea(name_ta)
+
+    g.add_obj(name_ta)
+    g.add_obj(btn)
+    g.add_obj(kb)
