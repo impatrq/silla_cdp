@@ -1,5 +1,5 @@
 import lvgl as lv
-from cdp import uart, scr, group
+from cdp import uart, group
 import lodepng as png
 from imagetools import get_png_info, open_png
 
@@ -26,6 +26,9 @@ def read_joystick_cb(drv, data):
 
     return False
 
+def users_cb(drv, data):
+    pass
+
 def profile_cb(drv, data):
     pass
 
@@ -33,9 +36,6 @@ def select_profile_cb(drv, data):
     pass
 
 def edit_profile_name_cb(drv, data):
-    pass
-
-def edit_profile_icon_cb(drv, data):
     pass
 
 def delete_profile_cb(drv, data):
@@ -50,7 +50,7 @@ def update_sensor_state():
 
 # ===== DIBUJAR PANTALLAS ===== #
 
-def draw_edit_screen(username, usericon):
+def draw_edit_screen(scr, username, usericon):
     h1 = lv.label(scr)
     h1.set_pos(96, 16)
     h1.set_text("Perfil")
@@ -99,9 +99,9 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 230)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, edit_profile_icon_cb, lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, users_cb, lv.EVENT.ALL, None)
     label = lv.label(btn)
-    label.set_text(lv.SYMBOL.EDIT + "  Editar icono")
+    label.set_text(lv.SYMBOL.LEFT + "  Volver atras")
     lv.group_t.add_obj(group, btn)
 
     btn = lv.btn(scr)
@@ -112,7 +112,7 @@ def draw_edit_screen(username, usericon):
     label.set_text(lv.SYMBOL.TRASH + "  Borrar perfil")
     lv.group_t.add_obj(group, btn)
 
-def draw_editname_screen():
+def draw_editname_screen(scr):
     h = lv.label(scr)
     h.set_pos(65, 16)
     h.set_text("Editar nombre")
