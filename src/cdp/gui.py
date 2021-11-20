@@ -77,8 +77,18 @@ def select_profile_cb(event, username, usericon):
 
     fsm.State = 4
 
-def edit_profile_name_cb(event, username, usericon):
-    pass
+def edit_user_name_cb(event, username, usericon):
+    draw_editname_screen(username, usericon)
+
+def edit_profile_name_cb(event, username, usericon, kb):
+    new_username = kb.get_textarea().get_text()
+    draw_profilewait_screen(new_username, usericon)
+
+    for user in _users_list:
+        if user.nombre == username:
+            user.edit(new_username)
+
+    fsm.State = 4
 
 def delete_profile_cb(event, username, usericon):
     pass
@@ -130,7 +140,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 190)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, lambda e: edit_profile_name_cb(e, username, usericon), lv.EVENT.PRESSED, None)
+    lv.btn.add_event_cb(btn, lambda e: edit_user_name_cb(e, username, usericon), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.EDIT + "  Editar nombre")
     lv.group_t.add_obj(group, btn)
@@ -170,11 +180,12 @@ def draw_editname_screen(username, usericon):
 
     btn = lv.btn(scr)
     btn.set_pos(65, 110)
-    lv.btn.add_event_cb(btn, lambda e: profile_cb(e, username, usericon), lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: profile_cb(e, username, usericon), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text("Volver atras")
 
     kb = lv.keyboard(scr)
+    kb.add_event_cb(lambda e: edit_profile_name_cb(e, username, usericon, kb), lv.EVENT.READY, None)
     kb.set_size(240, 320 // 2)
     kb.set_textarea(name_ta)
 
