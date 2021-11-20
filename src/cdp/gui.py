@@ -48,7 +48,7 @@ from cdp.helper import setup_motors_to_position
 # ===== CALLBACKS ===== #
 
 def users_cb(event):
-    pass
+    draw_users_screen(_users_list)
 
 def calibration_cb(event):
     fsm.State = 2 # CALIBRATING
@@ -149,7 +149,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 230)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, lambda e: users_cb(e), lv.EVENT.PRESSED, None)
+    lv.btn.add_event_cb(btn, users_cb, lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.LEFT + "  Volver atras")
     lv.group_t.add_obj(group, btn)
