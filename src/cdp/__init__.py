@@ -57,41 +57,62 @@ motor_pines = {
 lv.init()
 display = ili9341(mosi=23, miso=19, clk=18, dc=21, cs=5, rst=22, power=-1, backlight=-1)
 
-def read_joystick_cb(drv, data):
-    read = vrx.read()
-    press = sw.value()
+class Joystick:
+    last_key = ""
 
-    if read > 954:
-        print('Right')
-        data.key = lv.KEY.RIGHT
-        group.focus_next()
-        sleep_ms(150)
-    elif read < 50:
-        print('Left')
-        data.key = lv.KEY.LEFT
-        group.focus_prev()
-        sleep_ms(150)
-    else:
-        data.key = 0
+    def __init__(self):
+        self.key = lv.KEY.ENTER
+        self.state = lv.INDEV_STATE.RELEASED
 
-    if press == 0:
-        print('Pressed')
-        data.key = lv.KEY.ENTER
-        data.state = lv.INDEV_STATE.PRESSED
-    else:
-        data.key = 0
-        data.state = lv.INDEV_STATE.RELEASED
+    def read_cb(self, drv, data):    
+        read = vry.read()
+        press = sw.value()
+        this_key = ""
 
-    return False
+        if read > 954:
+            self.next(lv.INDEV_STATE.PRESSED)
+            this_key = "right"
+        elif read < 50:
+            self.prev(lv.INDEV_STATE.PRESSED)
+            this_key = "left"
+        elif press == 0:
+            self.enter(lv.INDEV_STATE.PRESSED)
+            this_key = "enter"
+        else:
+            if self.last_key == "right":
+                self.next(lv.INDEV_STATE.RELEASED)
+            elif self.last_key == "left":
+                self.prev(lv.INDEV_STATE.RELEASED)
+            elif self.last_key == "enter":
+                self.enter(lv.INDEV_STATE.RELEASED)
 
+        data.key = self.key
+        data.state = self.state
+        self.last_key = this_key
+        return False
+
+    def send_key(self, event, key):
+        self.key = key
+        self.state = event
+
+    def next(self, event):
+        self.send_key(event, lv.KEY.RIGHT)
+
+    def prev(self, event):
+        self.send_key(event, lv.KEY.LEFT)
+
+    def enter(self, event):
+        self.send_key(event, lv.KEY.ENTER)
+
+joystick = Joystick()
 indev = lv.indev_drv_t()
 indev.init()
 indev.type = lv.INDEV_TYPE.ENCODER
-indev.read_cb = read_joystick_cb
-joystick = indev.register()
+indev.read_cb = joystick.read_cb
+encoder = indev.register()
 
 group = lv.group_create()
-lv.indev_t.set_group(joystick, group)
+encoder.set_group(group)
 
 scr = lv.obj()
 

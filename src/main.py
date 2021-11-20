@@ -6,8 +6,6 @@ from utime import sleep
 # ===== FSM STATES ===== #
 STARTING, IDLE, CALIBRATING, CALIB_NAME, USER_SCREEN = range(5)
 
-new_pos = 0
-
 def wait_for_action():
     print(".")
     sleep(1)
@@ -16,13 +14,13 @@ def wait_for_action():
 def do_calibration():
     setup_motors_to_position(motor_pines, turn_counter, None)
     new_pos = start_calibration(_global_config['calibration_data'], turn_counter)
-    draw_calibname_screen()
+    draw_calibname_screen(new_pos)
 
     fsm.State = IDLE
     fsm.next_state()
 
 def finish_calibration(new_pos, name):
-    
+    pass
 
 def main():
     draw_loading_screen()

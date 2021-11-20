@@ -29,7 +29,7 @@ def sensor_check_range(which: str, minim: int = 0, maxim: int = 1023) -> bool:
         print(read)
         return False
 
-def sensor_check_all_states(sensors: list, v_update: bool = False) -> bool:
+def sensor_check_all_states(sensors: list) -> bool:
     """
         Pregunta por cada sensor dentro de la lista `sensors` mediante 'comm', luego lo recibe, 
         e indica si TODOS estan dentro de su rango especificado.
@@ -166,12 +166,14 @@ def start_calibration(calibration_data: dict, turn_counter: Pin):
 
     # Esperar por confirmacion de inicio
     draw_calib_screen('bar')
-    wait_for_interrupt_sensor('bar')
+    #wait_for_interrupt_sensor('bar')
+    sleep_ms(3000)
 
     # Formato config => [motor_pines[], sensors[type, str, min, max], mux_code, max_pos]
     for motor, config in calibration_data.items():
         draw_calib_screen(motor)
-        new_pos[motor] = move_until_finished(turn_counter, *config)
+        new_pos[motor] = 1 #move_until_finished(turn_counter, *config)
+        sleep_ms(3000)
 
     # Devolver dict con posiciones
     return new_pos

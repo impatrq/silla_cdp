@@ -251,12 +251,12 @@ def draw_calib_screen(which):
     elif which == 'apbrazo':
         i.set_pos(10, 120)
         i.set_text("Instrucciones de apoyabrazos")
-    
+
     lv.scr_load(scr)
 
 def draw_calibname_screen(new_pos):
     lv.obj.clean(scr)
-    
+
     h = lv.label(scr)
     h.set_pos(65, 16)
     h.set_text("Elegir nombre")
@@ -271,9 +271,8 @@ def draw_calibname_screen(new_pos):
     kb.set_size(240, 320 // 2)
     kb.set_textarea(name_ta)
 
-    g.add_obj(name_ta)
-    g.add_obj(btn)
-    g.add_obj(kb)
+    group.add_obj(name_ta)
+    group.add_obj(kb)
 
     lv.scr_load(scr)
 
