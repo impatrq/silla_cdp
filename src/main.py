@@ -1,10 +1,10 @@
 from cdp import _global_config, _users_list, fsm, turn_counter, motor_pines
-from cdp.gui import draw_loading_screen, draw_users_screen, draw_calibname_screen
+from cdp.gui import draw_loading_screen, draw_users_screen, draw_calibname_screen, draw_edit_screen
 from cdp.helper import start_calibration, setup_motors_to_position
 from utime import sleep
 
 # ===== FSM STATES ===== #
-STARTING, IDLE, CALIBRATING, CALIBRATION_END, USER_SCREEN = range(5)
+STARTING, IDLE, CALIBRATING, CALIBRATION_END, USER_SETUP = range(5)
 
 def wait_for_action():
     while True:
@@ -32,6 +32,13 @@ def finish_calibration():
     fsm.State = IDLE
     fsm.next_state()
 
+def user_setup():
+    sleep(2)
+    draw_users_screen(_users_list)
+
+    fsm.State = IDLE
+    fsm.next_state()
+
 def main():
     draw_loading_screen()
     sleep(3)
@@ -47,7 +54,8 @@ if __name__ == "__main__":
     fsm.add_states([
         (IDLE, wait_for_action),
         (CALIBRATING, do_calibration),
-        (CALIBRATION_END, finish_calibration)
+        (CALIBRATION_END, finish_calibration),
+        (USER_SETUP, user_setup)
     ])
 
     # Arrancar la FSM

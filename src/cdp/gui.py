@@ -1,10 +1,49 @@
 import lvgl as lv
 import ujson as json
-from cdp import fsm, group, scr, _users_list
+from cdp import fsm, group, scr, _users_list, motor_pines, turn_counter
 from cdp.classes import Usuario
 from utime import sleep_ms
 import lodepng as png
 from imagetools import get_png_info, open_png
+
+def draw_calib_screen(which):
+    group.remove_all_objs()
+
+    lv.obj.clean(scr)
+
+    h = lv.label(scr)
+    h.set_pos(75,16)
+    h.set_text("Calibrando...")
+
+    i = lv.label(scr)
+    i.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+
+    if which == 'bar':
+        i.set_pos(40, 120)
+        i.set_text("Instrucciones de barra")
+    elif which == 'assheight':
+        i.set_pos(55, 120)
+        i.set_text("Instrucciones de \naltura de asiento")
+    elif which == 'assdepth':
+        i.set_pos(35, 120)
+        i.set_text("Instrucciones de \nprofundidad de asiento")
+    elif which == 'lumbar':
+        i.set_pos(30, 120)
+        i.set_text("Instrucciones de lumbar")
+    elif which == 'cabezal':
+        i.set_pos(30, 120)
+        i.set_text("Instrucciones de cabezal")
+    elif which == 'apbrazo':
+        i.set_pos(10, 120)
+        i.set_text("Instrucciones de apoyabrazos")
+
+    s = lv.spinner(scr, 2000, 40)
+    s.set_size(60, 60)
+    s.set_pos(85, 200)
+
+    lv.scr_load(scr)
+
+from cdp.helper import setup_motors_to_position
 
 # ===== CALLBACKS ===== #
 
@@ -29,7 +68,14 @@ def delete_user_cb(event, username):
     pass
 
 def select_profile_cb(event, username, usericon):
-    pass
+    draw_profilewait_screen(username, usericon)
+
+    for user in _users_list:
+        if user.nombre == username:
+            print(f"Configurando {username}")
+            # setup_motors_to_position(motor_pines, turn_counter)
+
+    fsm.State = 4
 
 def edit_profile_name_cb(event, username, usericon):
     pass
@@ -76,7 +122,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 150)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, lambda e: select_profile_cb(e, username, usericon), lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: select_profile_cb(e, username, usericon), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.OK + "  Seleccionar perfil")
     lv.group_t.add_obj(group, btn)
@@ -84,7 +130,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 190)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, lambda e: edit_profile_name_cb(e, username, usericon), lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: edit_profile_name_cb(e, username, usericon), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.EDIT + "  Editar nombre")
     lv.group_t.add_obj(group, btn)
@@ -92,7 +138,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 230)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, lambda e: users_cb(e), lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: users_cb(e), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.LEFT + "  Volver atras")
     lv.group_t.add_obj(group, btn)
@@ -100,7 +146,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 270)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, lambda e: delete_profile_cb(e, username, usericon), lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: delete_profile_cb(e, username, usericon), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.TRASH + "  Borrar perfil")
     lv.group_t.add_obj(group, btn)
@@ -249,43 +295,6 @@ def draw_users_screen(users):
     group.add_obj(btn)
 
     panel.update_snap(lv.ANIM.ON)
-    lv.scr_load(scr)
-
-def draw_calib_screen(which):
-    group.remove_all_objs()
-
-    lv.obj.clean(scr)
-
-    h = lv.label(scr)
-    h.set_pos(75,16)
-    h.set_text("Calibrando...")
-
-    i = lv.label(scr)
-    i.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
-
-    if which == 'bar':
-        i.set_pos(40, 120)
-        i.set_text("Instrucciones de barra")
-    elif which == 'assheight':
-        i.set_pos(55, 120)
-        i.set_text("Instrucciones de \naltura de asiento")
-    elif which == 'assdepth':
-        i.set_pos(35, 120)
-        i.set_text("Instrucciones de \nprofundidad de asiento")
-    elif which == 'lumbar':
-        i.set_pos(30, 120)
-        i.set_text("Instrucciones de lumbar")
-    elif which == 'cabezal':
-        i.set_pos(30, 120)
-        i.set_text("Instrucciones de cabezal")
-    elif which == 'apbrazo':
-        i.set_pos(10, 120)
-        i.set_text("Instrucciones de apoyabrazos")
-
-    s = lv.spinner(scr, 2000, 40)
-    s.set_size(60, 60)
-    s.set_pos(85, 200)
-
     lv.scr_load(scr)
 
 def draw_calibname_screen(new_pos):

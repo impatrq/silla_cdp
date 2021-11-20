@@ -2,46 +2,6 @@ import ujson as json
 from machine import Pin, time_pulse_us, UART
 from utime import sleep_ms, sleep_us
 
-# Necesario para evitar ImportError, parece?
-def setup_motors_to_position(motor_pines: dict, turn_counter: Pin, new_config: dict = None):
-    """
-        Mueve los motores hasta la posicion indicada en `new_config`.
-
-        - Para una posicion determinada, pasarle motor_pines['Adelante'] y una configuracion, previamente se debe estar en posicion cero.
-        - Para volver a la posicion cero 'default', pasarle motor_pines['Atras'] y ninguna configuracion. Esto hace automaticamente que vuelva a la posicion cero.
-    """
-    # Para volver a posicion cero
-    if new_config is None:
-        new_config = {"assheight": 0, "assdepth": 0, "lumbar": 0,"cabezal": 0, "apbrazo": 0}
-
-    # Cargar JSON para despues poder guardar las nuevas posiciones
-    d = load_json()
-
-    for motor, ciclos in new_config.items():
-        # Contador de ciclos
-        if ciclos == 0:
-            count = -(d['Actuales'][motor])
-        else:
-            count = 0
-
-        # Prender el/los motor/es
-        for pin in motor_pines[motor]:
-            pin.value(1)
-
-        # Contar vueltas hasta llegar a los ciclos necesarios
-        while count < ciclos:
-            count += turn_counter.value()
-
-        # Apagar los motores
-        for pin in motor_pines[motor]:
-            pin.value(0)
-
-    # Cambiar las posiciones actuales por las nuevas en el JSON
-    d["Actuales"] = new_config
-
-    # Re-escribir el JSON
-    save_json(d)
-
 class Usuario():
     json_motor_path = 'cdp/settings/motor_data.json'
     json_user_path = 'cdp/settings/user_data.json'
