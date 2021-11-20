@@ -2,7 +2,7 @@ import lvgl as lv
 import ujson as json
 from cdp import fsm, group, scr, _users_list, motor_pines, turn_counter
 from cdp.classes import Usuario
-from utime import sleep_ms
+from utime import sleep, sleep_ms
 import lodepng as png
 from imagetools import get_png_info, open_png
 
@@ -88,7 +88,8 @@ def edit_profile_name_cb(event, username, usericon, kb):
         if user.nombre == username:
             user.edit(new_username)
 
-    fsm.State = 4
+    sleep(2)
+    draw_edit_screen(new_username, usericon)
 
 def delete_profile_cb(event, username, usericon):
     pass
