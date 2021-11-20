@@ -64,8 +64,8 @@ def calib_name_cb(event, new_pos, kb):
 def profile_cb(event, username, usericon):
     draw_edit_screen(username, usericon)
 
-def delete_user_cb(event, username):
-    pass
+def delete_user_cb(event, username, usericon):
+    draw_delete_screen(username, usericon)
 
 def select_profile_cb(event, username, usericon):
     draw_profilewait_screen(username, usericon)
@@ -84,15 +84,21 @@ def edit_profile_name_cb(event, username, usericon, kb):
     new_username = kb.get_textarea().get_text()
     draw_profilewait_screen(new_username, usericon)
 
-    for user in _users_list:
+    for i, user in enumerate(_users_list):
         if user.nombre == username:
-            user.edit(new_username)
+            user.edit(new_username, usericon)
 
-    sleep(2)
     draw_edit_screen(new_username, usericon)
 
 def delete_profile_cb(event, username, usericon):
-    pass
+    draw_profilewait_screen(username, usericon)
+
+    for i, user in enumerate(_users_list):
+        if user.nombre == username:
+            user.delete()
+            del _users_list[i]
+
+    fsm.State = 4
 
 # ===== DIBUJAR PANTALLAS ===== #
 
@@ -157,7 +163,7 @@ def draw_edit_screen(username, usericon):
     btn = lv.btn(scr)
     btn.set_pos(16, 270)
     btn.set_width(200)
-    lv.btn.add_event_cb(btn, lambda e: delete_profile_cb(e, username, usericon), lv.EVENT.PRESSED, None)
+    lv.btn.add_event_cb(btn, lambda e: delete_user_cb(e, username, usericon), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.TRASH + "  Borrar perfil")
     lv.group_t.add_obj(group, btn)
@@ -213,14 +219,14 @@ def draw_delete_screen(username, usericon):
 
     btn = lv.btn(scr)
     btn.set_pos(20, 140)
-    lv.btn.add_event_cb(btn, lambda e: delete_user_cb(e, username), lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: delete_profile_cb(e, username, usericon), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text("Borrar")
     group.add_obj(btn)
 
     btn = lv.btn(scr)
     btn.set_pos(132, 140)
-    lv.btn.add_event_cb(btn, lambda e: profile_cb(e, username, usericon), lv.EVENT.ALL, None)
+    lv.btn.add_event_cb(btn, lambda e: profile_cb(e, username, usericon), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text("Cancelar")
     group.add_obj(btn)
