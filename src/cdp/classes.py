@@ -270,7 +270,7 @@ class ControlUART():
         if self.__uart.any():
             r = self.__uart.read()
             return r
-        return b'0'
+        return None
 
     def read_string(self) -> str:
         rb = self.read_bytes()
