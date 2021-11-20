@@ -4,28 +4,36 @@ from cdp.helper import start_calibration, setup_motors_to_position
 from utime import sleep
 
 # ===== FSM STATES ===== #
-STARTING, IDLE, CALIBRATING, CALIB_NAME, USER_SCREEN = range(5)
+STARTING, IDLE, CALIBRATING, CALIBRATION_END, USER_SCREEN = range(5)
 
 def wait_for_action():
-    print(".")
-    sleep(1)
+    while True:
+        print("Waiting...")
+        sleep(1)
+        if fsm.State != IDLE:
+            break
     fsm.next_state()
 
 def do_calibration():
-    setup_motors_to_position(motor_pines, turn_counter, None)
+    print("Start calibration")
+    #setup_motors_to_position(motor_pines['Atras'], turn_counter, None)
     new_pos = start_calibration(_global_config['calibration_data'], turn_counter)
     draw_calibname_screen(new_pos)
 
     fsm.State = IDLE
     fsm.next_state()
 
-def finish_calibration(new_pos, name):
-    pass
+def finish_calibration():
+    print("Finish calibration")
+    draw_users_screen([user.nombre for user in _users_list])
+
+    fsm.State = IDLE
+    fsm.next_state()
 
 def main():
     draw_loading_screen()
     sleep(3)
-    draw_users_screen([user.name for user in _users_list])
+    draw_users_screen([user.nombre for user in _users_list])
 
     # Cambiar de estado a espera
     fsm.State = IDLE
@@ -36,7 +44,8 @@ if __name__ == "__main__":
     # Agregar estados a la FSM
     fsm.add_states([
         (IDLE, wait_for_action),
-        (CALIBRATING, do_calibration)
+        (CALIBRATING, do_calibration),
+        (CALIBRATION_END, finish_calibration)
     ])
 
     # Arrancar la FSM

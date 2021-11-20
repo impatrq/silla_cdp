@@ -85,6 +85,7 @@ class Joystick:
                 self.prev(lv.INDEV_STATE.RELEASED)
             elif self.last_key == "enter":
                 self.enter(lv.INDEV_STATE.RELEASED)
+            this_key = ""
 
         data.key = self.key
         data.state = self.state
@@ -142,9 +143,9 @@ def load_users_from_file_global():
     new_list = []
 
     try:
-        with open('cdp/' + Usuario.json_motor_path, "r") as file:
+        with open(Usuario.json_motor_path, "r") as file:
             data = json.load(file)
-        with open('cdp/' + Usuario.json_user_path, 'r') as file:
+        with open(Usuario.json_user_path, 'r') as file:
             icons = json.load(file)
         for user, config in data.items():
             if user == "Actuales":

@@ -98,13 +98,13 @@ def wait_for_interrupt(pin: Pin):
 
 # Función para obtener los datos de los motores
 def load_json() -> dict:
-    with open("settings/motor_data.json", "r") as file:
+    with open("cdp/settings/motor_data.json", "r") as file:
         dict_motores = json.load(file)
     return dict_motores
 
 # Funcion para guardar los datos de los motores
 def save_json(data: dict):
-    with open("settings/motor_data.json", "w") as outfile:
+    with open("cdp/settings/motor_data.json", "w") as outfile:
         json.dump(data, outfile)
 
 # Mover motor hasta completar con el sensado requerido
@@ -167,13 +167,14 @@ def start_calibration(calibration_data: dict, turn_counter: Pin):
     # Esperar por confirmacion de inicio
     draw_calib_screen('bar')
     #wait_for_interrupt_sensor('bar')
-    sleep_ms(3000)
+    sleep_ms(1000)
 
     # Formato config => [motor_pines[], sensors[type, str, min, max], mux_code, max_pos]
     for motor, config in calibration_data.items():
+        print(f"Configurando {motor}")
         draw_calib_screen(motor)
         new_pos[motor] = 1 #move_until_finished(turn_counter, *config)
-        sleep_ms(3000)
+        sleep_ms(1000)
 
     # Devolver dict con posiciones
     return new_pos
