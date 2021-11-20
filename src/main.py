@@ -25,7 +25,9 @@ def do_calibration():
 
 def finish_calibration():
     print("Finish calibration")
-    draw_users_screen([user.nombre for user in _users_list])
+    draw_loading_screen()
+    sleep(1)
+    draw_users_screen(_users_list)
 
     fsm.State = IDLE
     fsm.next_state()
@@ -33,7 +35,7 @@ def finish_calibration():
 def main():
     draw_loading_screen()
     sleep(3)
-    draw_users_screen([user.nombre for user in _users_list])
+    draw_users_screen(_users_list)
 
     # Cambiar de estado a espera
     fsm.State = IDLE

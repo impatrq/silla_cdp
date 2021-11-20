@@ -64,7 +64,10 @@ class Joystick:
         self.key = lv.KEY.ENTER
         self.state = lv.INDEV_STATE.RELEASED
 
-    def read_cb(self, drv, data):    
+        self.r_key = lv.KEY.RIGHT
+        self.l_key = lv.KEY.LEFT
+
+    def read_cb(self, drv, data):
         read = vry.read()
         press = sw.value()
         this_key = ""
@@ -85,7 +88,6 @@ class Joystick:
                 self.prev(lv.INDEV_STATE.RELEASED)
             elif self.last_key == "enter":
                 self.enter(lv.INDEV_STATE.RELEASED)
-            this_key = ""
 
         data.key = self.key
         data.state = self.state
@@ -97,10 +99,10 @@ class Joystick:
         self.state = event
 
     def next(self, event):
-        self.send_key(event, lv.KEY.RIGHT)
+        self.send_key(event, self.r_key)
 
     def prev(self, event):
-        self.send_key(event, lv.KEY.LEFT)
+        self.send_key(event, self.l_key)
 
     def enter(self, event):
         self.send_key(event, lv.KEY.ENTER)

@@ -23,7 +23,7 @@ def calib_name_cb(event, new_pos, kb):
     fsm.State = 3 # CALIBRATION_END
 
 def profile_cb(event, username, usericon):
-    pass
+    draw_edit_screen(username, usericon)
 
 def delete_user_cb(event, username):
     pass
@@ -229,13 +229,13 @@ def draw_users_screen(users):
     panel.set_scroll_snap_x(lv.SCROLL_SNAP.CENTER)
     panel.set_flex_flow(lv.FLEX_FLOW.ROW)
 
-    for i, user in enumerate(users):
+    for user in users:
         btn = lv.btn(panel)
         btn.set_size(150, 150)
         btn.center()
-        lv.btn.add_event_cb(btn, lambda e: profile_cb(e, None, None), lv.EVENT.PRESSED, None)
+        lv.btn.add_event_cb(btn, lambda e: profile_cb(e, user.nombre, user.icon), lv.EVENT.PRESSED, None)
         label = lv.label(btn)
-        label.set_text(user)
+        label.set_text(user.nombre)
         label.center()
         group.add_obj(btn)
 
