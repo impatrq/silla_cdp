@@ -2,7 +2,7 @@
 import json
 from machine import Pin
 from utime import sleep_ms
-from cdp import uart, sensor_us
+from cdp import uart, sensor_us, motor_pines
 from cdp.gui import draw_calib_screen
 
 # ==================== SENSORES ==================== #
@@ -235,7 +235,7 @@ if __name__ == "__main__":
             "cabezal" : 1,
             "apbrazo" : 2,
             "lumbar" : 3,
-            "assprof" : 4,
+            "assdepth" : 4,
             "assheight" : 3
         }
     }

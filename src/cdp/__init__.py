@@ -94,7 +94,7 @@ class Joystick:
             r = r.split('-')
             read = int(r[0])
             press = int(r[2][:1])
-            print(press)
+            print(press, read)
             this_key = ""
 
             if read > 954:
@@ -187,7 +187,7 @@ def load_users_from_file_global():
                     "cabezal" : 0,
                     "apbrazo" : 0,
                     "lumbar" : 0,
-                    "assprof" : 0,
+                    "assdepth" : 0,
                     "assheight" : 0
                 }
             }
