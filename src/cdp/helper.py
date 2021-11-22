@@ -129,20 +129,28 @@ def move_until_finished(turn_counter: Pin, motor_pines: list, sensors_to_check: 
     for pin in motor_pines:
         pin.value(1)
 
+    i = 0
+
     # Actuar segun tipo de sensor asignado
     if sensor_type == "piezo":
         while True:
             pos += turn_counter.value()
-            if any(sensor_check_range(sensor, minim, maxim) for sensor, minim, maxim in sensors_to_check[1:]) or pos >= max_position:
+            i += 1
+            if i == 100:
                 break
+            # if any(sensor_check_range(sensor, minim, maxim) for sensor, minim, maxim in sensors_to_check[1:]) or pos >= max_position:
+            #     break
     elif sensor_type == "ultra":
         # Safety check
         if sensor_us is None:
             return 0
         while True:
             pos += turn_counter.value()
-            if sensor_us.send_pulse_centimeters() > 10 or pos >= max_position:
+            i += 1
+            if i == 100:
                 break
+            # if sensor_us.send_pulse_centimeters() > 10 or pos >= max_position:
+            #     break
 
     # Apagar motores
     for pin in motor_pines:
@@ -173,7 +181,7 @@ def start_calibration(calibration_data: dict, turn_counter: Pin):
     for motor, config in calibration_data.items():
         print(f"Configurando {motor}")
         draw_calib_screen(motor)
-        new_pos[motor] = 1 #move_until_finished(turn_counter, *config)
+        new_pos[motor] = move_until_finished(turn_counter, motor_pines['Adelante'], *config[1:])
         sleep_ms(1000)
 
     # Devolver dict con posiciones
@@ -194,6 +202,8 @@ def setup_motors_to_position(motor_pines: dict, turn_counter: Pin, new_config: d
     d = load_json()
 
     for motor, ciclos in new_config.items():
+        print(f"Moviendo {motor}...")
+        
         # Contador de ciclos
         if ciclos == 0:
             count = -(d['Actuales'][motor])

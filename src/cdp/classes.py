@@ -274,7 +274,7 @@ class ControlUART():
 
     def read_string(self) -> str:
         rb = self.read_bytes()
-        return rb.decode()
+        return rb.decode('utf-8') if rb else None
 
     def dummy_read(self, msg: str, times: int):
         i = 0
@@ -286,5 +286,5 @@ class ControlUART():
 
     def send_and_receive(self, msg: str):
         self.send_bytes(msg)
-        sleep_ms(500)
+        sleep_ms(20)
         return self.read_string()

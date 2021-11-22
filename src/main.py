@@ -7,25 +7,6 @@ from utime import sleep
 # ===== FSM STATES ===== #
 STARTING, IDLE, CALIBRATING, CALIBRATION_END, USER_SETUP = range(5)
 
-def look_for_uart_conn():
-    tries = 0
-
-    while True:
-        uart.send_bytes('askswi')
-        r = uart.read_bytes()
-
-        if r:
-            print("Done!")
-            print(r)
-            break
-
-        print("wtf")
-        tries += 1
-
-        if tries > 100:
-            reset()
-        sleep(0.1)
-
 def wait_for_action():
     while True:
         print("Waiting...")
@@ -36,7 +17,7 @@ def wait_for_action():
 
 def do_calibration():
     print("Start calibration")
-    #setup_motors_to_position(motor_pines['Atras'], turn_counter, None)
+    setup_motors_to_position(motor_pines['Atras'], turn_counter, None)
     new_pos = start_calibration(_global_config['calibration_data'], turn_counter)
     draw_calibname_screen(new_pos)
 
@@ -61,8 +42,6 @@ def user_setup():
 
 def main():
     draw_loading_screen()
-
-    look_for_uart_conn()
 
     sleep(2)
     draw_users_screen(_users_list)

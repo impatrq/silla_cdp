@@ -45,6 +45,21 @@ def draw_calib_screen(which):
 
 from cdp.helper import setup_motors_to_position
 
+with open('008-man.png', 'rb') as i:
+    png_data = i.read()
+
+png_img_dsc = lv.img_dsc_t({
+    'data_size': len(png_data),
+    'data': png_data
+})
+
+raw_dsc = lv.img_dsc_t()
+get_png_info(None, png_img_dsc, raw_dsc.header)
+dsc = lv.img_decoder_dsc_t({'src': png_img_dsc})
+if open_png(None, dsc) == lv.RES.OK:
+    raw_dsc.data = dsc.img_data
+    raw_dsc.data_size = raw_dsc.header.w * raw_dsc.header.h * lv.color_t.__SIZE__
+
 # ===== CALLBACKS ===== #
 
 def users_cb(event):
@@ -54,10 +69,11 @@ def calibration_cb(event):
     fsm.State = 2 # CALIBRATING
 
 def calib_name_cb(event, new_pos, kb):
-    # Recibir posicion y nombre, guardarlo en el archivo
     username = kb.get_textarea().get_text()
     new_user = Usuario(username, '008-man.png', new_pos)
     _users_list.append(new_user)
+
+    group.set_editing(False)
 
     fsm.State = 3 # CALIBRATION_END
 
@@ -73,12 +89,14 @@ def select_profile_cb(event, username, usericon):
     for user in _users_list:
         if user.nombre == username:
             print(f"Configurando {username}")
-            # setup_motors_to_position(motor_pines, turn_counter)
+            setup_motors_to_position(motor_pines['Atras'], turn_counter)
+            setup_motors_to_position(motor_pines['Adelante'], turn_counter, user.dict_posicion)
 
     fsm.State = 4
 
 def edit_user_name_cb(event, username, usericon):
     draw_editname_screen(username, usericon)
+    group.set_editing(False)
 
 def edit_profile_name_cb(event, username, usericon, kb):
     new_username = kb.get_textarea().get_text()
@@ -87,6 +105,8 @@ def edit_profile_name_cb(event, username, usericon, kb):
     for i, user in enumerate(_users_list):
         if user.nombre == username:
             user.edit(new_username, usericon)
+
+    group.set_editing(False)
 
     draw_edit_screen(new_username, usericon)
 
@@ -115,25 +135,10 @@ def draw_edit_screen(username, usericon):
     h1.set_pos(145, 80)
     h1.set_text(username)
 
-    # Cargar imagen png
-    with open(usericon, 'rb') as i:
-        png_data = i.read()
-
-    png_img_dsc = lv.img_dsc_t({
-        'data_size': len(png_data),
-        'data': png_data
-    })
-
     img = lv.img(scr)
     img.set_pos(40, 72)
     img.set_zoom(256+256)
-    raw_dsc = lv.img_dsc_t()
-    get_png_info(None, png_img_dsc, raw_dsc.header)
-    dsc = lv.img_decoder_dsc_t({'src': png_img_dsc})
-    if open_png(None, dsc) == lv.RES.OK:
-        raw_dsc.data = dsc.img_data
-        raw_dsc.data_size = raw_dsc.header.w * raw_dsc.header.h * lv.color_t.__SIZE__
-        img.set_src(raw_dsc)
+    img.set_src(raw_dsc)
 
     # Agregar botones
     btn = lv.btn(scr)
@@ -251,24 +256,10 @@ def draw_profilewait_screen(username, usericon):
     h.set_text(username)
 
     # Cargar imagen png
-    with open(usericon, 'rb') as i:
-        png_data = i.read()
-
-    png_img_dsc = lv.img_dsc_t({
-        'data_size': len(png_data),
-        'data': png_data
-    })
-
     img = lv.img(scr)
     img.set_pos(40, 200)
     img.set_zoom(256+256)
-    raw_dsc = lv.img_dsc_t()
-    get_png_info(None, png_img_dsc, raw_dsc.header)
-    dsc = lv.img_decoder_dsc_t({'src': png_img_dsc})
-    if open_png(None, dsc) == lv.RES.OK:
-        raw_dsc.data = dsc.img_data
-        raw_dsc.data_size = raw_dsc.header.w * raw_dsc.header.h * lv.color_t.__SIZE__
-        img.set_src(raw_dsc)
+    img.set_src(raw_dsc)
 
     lv.scr_load(scr)
 

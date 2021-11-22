@@ -1,8 +1,8 @@
 import lvgl as lv
 import ujson as json
 from ili9XXX import ili9341
-from machine import Pin, ADC
-from utime import sleep_ms
+from machine import Pin, ADC, reset
+from utime import sleep_ms, sleep
 
 # ===== Inicializar variables ===== #
 sensor_us = None
@@ -54,6 +54,27 @@ motor_pines = {
 }
 
 # ===== LVGL ===== #
+def look_for_uart_conn():
+    tries = 0
+
+    while True:
+        uart.send_bytes('askswi')
+        sleep(0.02)
+        r = uart.read_bytes()
+
+        if r:
+            print("Done!")
+            print(r)
+            break
+
+        print("No hay lectura")
+        tries += 1
+
+        if tries > 1000:
+            reset()
+
+look_for_uart_conn()
+
 lv.init()
 display = ili9341(mosi=23, miso=19, clk=18, dc=21, cs=5, rst=22, power=-1, backlight=-1)
 
@@ -64,35 +85,39 @@ class Joystick:
         self.key = lv.KEY.ENTER
         self.state = lv.INDEV_STATE.RELEASED
 
-        self.r_key = lv.KEY.RIGHT
-        self.l_key = lv.KEY.LEFT
+        self.r_key = lv.KEY.LEFT
+        self.l_key = lv.KEY.RIGHT
 
     def read_cb(self, drv, data):
-        read = vry.read()
-        press = sw.value()
-        this_key = ""
+        r = uart.send_and_receive("askswi")
+        if r:
+            r = r.split('-')
+            read = int(r[0])
+            press = int(r[2][:1])
+            print(press)
+            this_key = ""
 
-        if read > 954:
-            self.next(lv.INDEV_STATE.PRESSED)
-            this_key = "right"
-        elif read < 50:
-            self.prev(lv.INDEV_STATE.PRESSED)
-            this_key = "left"
-        elif press == 0:
-            self.enter(lv.INDEV_STATE.PRESSED)
-            this_key = "enter"
-        else:
-            if self.last_key == "right":
-                self.next(lv.INDEV_STATE.RELEASED)
-            elif self.last_key == "left":
-                self.prev(lv.INDEV_STATE.RELEASED)
-            elif self.last_key == "enter":
-                self.enter(lv.INDEV_STATE.RELEASED)
+            if read > 954:
+                self.next(lv.INDEV_STATE.PRESSED)
+                this_key = "right"
+            elif read < 50:
+                self.prev(lv.INDEV_STATE.PRESSED)
+                this_key = "left"
+            elif press == 0:
+                self.enter(lv.INDEV_STATE.PRESSED)
+                this_key = "enter"
+            else:
+                if self.last_key == "right":
+                    self.next(lv.INDEV_STATE.RELEASED)
+                elif self.last_key == "left":
+                    self.prev(lv.INDEV_STATE.RELEASED)
+                elif self.last_key == "enter":
+                    self.enter(lv.INDEV_STATE.RELEASED)
 
-        data.key = self.key
-        data.state = self.state
-        self.last_key = this_key
-        return False
+            data.key = self.key
+            data.state = self.state
+            self.last_key = this_key
+            return False
 
     def send_key(self, event, key):
         self.key = key
@@ -178,4 +203,4 @@ def set_motorpin_output():
 # ===== INIT ===== #
 _global_config = load_config_from_file_global()
 _users_list = load_users_from_file_global()
-# set_motorpin_output()
+set_motorpin_output()
