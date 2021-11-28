@@ -1,29 +1,63 @@
-from cdp import _global_config, STARTING, IDLE
-from cdp.classes import StateMachine
+from cdp import _global_config, _users_list, fsm, turn_counter, motor_pines, uart
+from cdp.gui import draw_loading_screen, draw_users_screen, draw_calibname_screen, draw_edit_screen
+from cdp.helper import start_calibration, setup_motors_to_position
+from machine import reset
+from utime import sleep
+
+# ===== FSM STATES ===== #
+STARTING, IDLE, CALIBRATING, CALIBRATION_END, USER_SETUP = range(5)
 
 def wait_for_action():
-    # TODO: interacción con la GUI
-    print(".")
+    while True:
+        print("Waiting...")
+        sleep(1)
+        if fsm.State != IDLE:
+            break
+    fsm.next_state()
+
+def do_calibration():
+    print("Start calibration")
+    setup_motors_to_position(motor_pines['Atras'], turn_counter, None)
+    new_pos = start_calibration(_global_config['calibration_data'], turn_counter)
+    draw_calibname_screen(new_pos)
+
+    fsm.State = IDLE
+    fsm.next_state()
+
+def finish_calibration():
+    print("Finish calibration")
+    draw_loading_screen()
+    sleep(1)
+    draw_users_screen(_users_list)
+
+    fsm.State = IDLE
+    fsm.next_state()
+
+def user_setup():
+    sleep(2)
+    draw_users_screen(_users_list)
+
+    fsm.State = IDLE
     fsm.next_state()
 
 def main():
-    if _global_config["first_time_open"]:
-        # TODO: Bienvenida por la GUI + primera calibracion
-        print("Bienvenido a Silla CDP")
-        _global_config["first_time_open"] = False
-    # TODO: Carga de pantalla inicial por la GUI
-    print("Pantalla de usuarios")
+    draw_loading_screen()
+
+    sleep(2)
+    draw_users_screen(_users_list)
 
     # Cambiar de estado a espera
     fsm.State = IDLE
 
-# Instancia de la FSM
-fsm = StateMachine((STARTING, main))
-
 if __name__ == "__main__":
+    fsm.change_first_state((STARTING, main))
+
     # Agregar estados a la FSM
     fsm.add_states([
-        (IDLE, wait_for_action)
+        (IDLE, wait_for_action),
+        (CALIBRATING, do_calibration),
+        (CALIBRATION_END, finish_calibration),
+        (USER_SETUP, user_setup)
     ])
 
     # Arrancar la FSM
