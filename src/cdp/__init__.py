@@ -1,19 +1,40 @@
 import lvgl as lv
 import ujson as json
 from ili9XXX import ili9341
-from machine import Pin
-from cdp.classes import Sensor_US, ControlUART, Usuario
-from cdp.gui import read_joystick_cb
+from machine import Pin, ADC, reset
+from utime import sleep_ms, sleep
 
-# ===== FSM STATES ===== #
-STARTING, IDLE, CALIBRATING, SENSOR_READING, USER_SCREEN = range(5)
+# ===== Inicializar variables ===== #
+sensor_us = None
+uart = None
+fsm = None
+group = None
+scr = None
 
-# ===== CONTROL US Y UART ===== #
+# ===== CONFIGURACION PROGRAMA ===== #
+_global_config = {}
+
+# ===== LISTA DE USUARIOS ===== #
+_users_list = []
+
+from cdp.classes import Sensor_US, ControlUART, Usuario, StateMachine
+
+# ===== OBJETOS DE CONTROL ===== #
 sensor_us = Sensor_US(16, 36)
 uart = ControlUART(9600, 17, 34)
+fsm = StateMachine()
 
 # ===== PINES ===== #
-pin_encoder = 35
+vrx = ADC(Pin(32, Pin.IN))
+vry = ADC(Pin(33, Pin.IN))
+sw = Pin(25, Pin.IN, Pin.PULL_UP)
+
+vrx.width(ADC.WIDTH_10BIT)
+vry.width(ADC.WIDTH_10BIT)
+vrx.atten(ADC.ATTN_11DB)
+vry.atten(ADC.ATTN_11DB)
+
+turn_counter = Pin(35, Pin.IN)
 
 motor_pines = {
     "Adelante": {
@@ -32,37 +53,106 @@ motor_pines = {
     }
 }
 
-# ===== CONFIGURACION PROGRAMA ===== #
-_global_config = {}
-
-# ===== LISTA DE USUARIOS ===== #
-_users_list = []
-
 # ===== LVGL ===== #
+def look_for_uart_conn():
+    tries = 0
+
+    while True:
+        uart.send_bytes('askswi')
+        sleep(0.02)
+        r = uart.read_bytes()
+
+        if r:
+            print("Done!")
+            print(r)
+            break
+
+        print("No hay lectura")
+        tries += 1
+
+        if tries > 1000:
+            reset()
+
+look_for_uart_conn()
+
 lv.init()
 display = ili9341(mosi=23, miso=19, clk=18, dc=21, cs=5, rst=22, power=-1, backlight=-1)
 
+class Joystick:
+    last_key = ""
+
+    def __init__(self):
+        self.key = lv.KEY.ENTER
+        self.state = lv.INDEV_STATE.RELEASED
+
+        self.r_key = lv.KEY.LEFT
+        self.l_key = lv.KEY.RIGHT
+
+    def read_cb(self, drv, data):
+        r = uart.send_and_receive("askswi")
+        if r:
+            r = r.split('-')
+            read = int(r[0])
+            press = int(r[2][:1])
+            print(press, read)
+            this_key = ""
+
+            if read > 954:
+                self.next(lv.INDEV_STATE.PRESSED)
+                this_key = "right"
+            elif read < 50:
+                self.prev(lv.INDEV_STATE.PRESSED)
+                this_key = "left"
+            elif press == 0:
+                self.enter(lv.INDEV_STATE.PRESSED)
+                this_key = "enter"
+            else:
+                if self.last_key == "right":
+                    self.next(lv.INDEV_STATE.RELEASED)
+                elif self.last_key == "left":
+                    self.prev(lv.INDEV_STATE.RELEASED)
+                elif self.last_key == "enter":
+                    self.enter(lv.INDEV_STATE.RELEASED)
+
+            data.key = self.key
+            data.state = self.state
+            self.last_key = this_key
+            return False
+
+    def send_key(self, event, key):
+        self.key = key
+        self.state = event
+
+    def next(self, event):
+        self.send_key(event, self.r_key)
+
+    def prev(self, event):
+        self.send_key(event, self.l_key)
+
+    def enter(self, event):
+        self.send_key(event, lv.KEY.ENTER)
+
+joystick = Joystick()
 indev = lv.indev_drv_t()
 indev.init()
 indev.type = lv.INDEV_TYPE.ENCODER
-indev.read_cb = read_joystick_cb
-joystick = indev.register()
+indev.read_cb = joystick.read_cb
+encoder = indev.register()
 
 group = lv.group_create()
-lv.indev_t.set_group(joystick, group)
+encoder.set_group(group)
 
 scr = lv.obj()
-lv.scr_load(scr)
 
 # ===== FUNCIONES ===== #
 def load_config_from_file_global():
     try:
-        with open("settings/cdp_config.json", "r") as file:
+        with open("cdp/settings/cdp_config.json", "r") as file:
             _global_config = json.load(file)
         return _global_config
     except OSError:
         print("cdp_config.json is missing. Creating a new default one...")
-        with open("settings/cdp_config.json", "w") as file:
+        with open("cdp/settings/cdp_config.json", "w") as file:
             c = {
                 "first_time_open" : True,
                 'calibration_data' : {
@@ -91,13 +181,13 @@ def load_users_from_file_global():
         return new_list
     except OSError:
         print("motor_data.json is missing. Creating a new default one...")
-        with open("settings/motor_data.json", "w") as file:
+        with open("cdp/settings/motor_data.json", "w") as file:
             c = {
                 "Actuales" : {
                     "cabezal" : 0,
                     "apbrazo" : 0,
                     "lumbar" : 0,
-                    "assprof" : 0,
+                    "assdepth" : 0,
                     "assheight" : 0
                 }
             }
@@ -108,7 +198,7 @@ def set_motorpin_output():
     for pin_list in motor_pines.values():
         for value in pin_list.values():
             for index, pin in enumerate(value):
-                value[index] = Pin(pin, Pin.OUT, Pin.PULL_DOWN, 0)
+                value[index] = Pin(pin, Pin.OUT)
 
 # ===== INIT ===== #
 _global_config = load_config_from_file_global()
