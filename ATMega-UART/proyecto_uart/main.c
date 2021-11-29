@@ -81,6 +81,9 @@ int main(void)
 	
     while (1) 
     {
+		// Limpiar print_buffer antes de hacer algo.
+		memset(print_buffer, 0, sizeof(print_buffer));
+		
 		// Esperar lectura de 6 bytes
 		uart_wait_read_string(reading, len);
 		
@@ -89,8 +92,7 @@ int main(void)
 			// Meter en ask_value los ultimos 3 bytes
 			sprintf((char*)ask_value, (char*)reading + 3);
 			
-			// Limpiar print_buffer y convertir ask_value a una int (para usar un switch case)
-			memset(print_buffer, 0, sizeof(print_buffer));
+			// Convertir ask_value a una int (para usar un switch case)
 			ask_state = ask_value_to_enum((char*)ask_value);
 			
 			switch (ask_state) {
@@ -136,18 +138,12 @@ int main(void)
 				break;
 				
 				// En caso que no se haya pedido correctamente.
-				default: sprintf((char*)print_buffer, "ERR"); break;
+				default: sprintf((char*)print_buffer, "ASKERR"); break;
 			}
-			
-			// Enviar print_buffer
-			uart_send_string(print_buffer);
 		}
 		else if (strncmp((char*)reading, "mux", 3) == 0) {
 			// Meter en ask_value los ultimos 3 bytes
 			sprintf((char*)ask_value, (char*)reading + 3);
-			
-			// Limpiar print_buffer
-			memset(print_buffer, 0, sizeof(print_buffer));
 			
 			unsigned int i = 0;
 			
@@ -164,10 +160,16 @@ int main(void)
 			i = ask_value[2] - '0';
 			PORTD ^= (-i ^ PORTD) & (1 << PIND5);
 			
-			// Enviar mensaje de confirmaci�n
-			sprintf((char*)print_buffer, "ADDRSET");
-			uart_send_string(print_buffer);
+			// Enviar mensaje de confirmacion
+			sprintf((char*)print_buffer, "MUXSET");
 		}
+		else {
+			// Enviar mensaje de Value Error
+			sprintf((char*)print_buffer, "VALERR");
+		}
+
+		// Enviar print_buffer
+			uart_send_string(print_buffer);
     }
 }
 
