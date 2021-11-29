@@ -1,6 +1,4 @@
-#ifndef F_CPU
 #define F_CPU 16000000UL
-#endif
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -23,7 +21,7 @@ typedef enum {
 	SWITCH
 } ASK;
 
-// �Para facilitar la lectura?
+// Para facilitar la lectura?
 ASK ask_value_to_enum(char* ask_value) {
 	if (strncmp(ask_value, "bar", 3) == 0) {
 		return BAR;
@@ -63,6 +61,7 @@ int main(void)
 	
 	// Inicializar PORTB
 	DDRB = 0x02;	// PB1 como salida
+	PORTB =	0x10;	// PB4 activar pull-up
 	DDRD = 0x60;	// PD5, PD6 como salida
 	
 	// Inicializar UART (baudrate = 9600, single)
