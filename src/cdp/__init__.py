@@ -21,7 +21,7 @@ from cdp.classes import Sensor_US, ControlUART, Usuario, StateMachine
 
 # ===== OBJETOS DE CONTROL ===== #
 sensor_us = Sensor_US(16, 36)
-uart = ControlUART(76800, 17, 34)
+uart = ControlUART(9600, 17, 34)
 fsm = StateMachine()
 
 # ===== PINES ===== #

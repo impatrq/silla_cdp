@@ -65,7 +65,7 @@ int main(void)
 	DDRD = 0x60;	// PD5, PD6 como salida
 	
 	// Inicializar UART (baudrate = 9600, single)
-	uart_init(76800, 0);
+	uart_init(9600, 0);
 	
 	// Inicializar pines ADC
 	adc_init();
