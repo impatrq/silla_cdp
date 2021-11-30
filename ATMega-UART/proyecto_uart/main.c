@@ -59,7 +59,7 @@ int main(void)
 	
 	ASK ask_state = 0;
 	
-	// Inicializar PORTB
+	// Inicializar pines
 	DDRB = 0x02;	// PB1 como salida
 	PORTB =	0x10;	// PB4 activar pull-up
 	DDRD = 0x60;	// PD5, PD6 como salida
@@ -79,11 +79,8 @@ int main(void)
 	// Habilitar interrupciones
 	sei();
 	
-    while (1) 
-    {
-		// Limpiar print_buffer antes de hacer algo.
-		memset(print_buffer, 0, sizeof(print_buffer));
-		
+	while (1)
+	{		
 		// Esperar lectura de 6 bytes
 		uart_wait_read_string(reading, len);
 		
@@ -92,7 +89,7 @@ int main(void)
 			// Meter en ask_value los ultimos 3 bytes
 			sprintf((char*)ask_value, (char*)reading + 3);
 			
-			// Convertir ask_value a una int (para usar un switch case)
+			// Limpiar print_buffer y convertir ask_value a una int (para usar un switch case)
 			ask_state = ask_value_to_enum((char*)ask_value);
 			
 			switch (ask_state) {
@@ -101,7 +98,7 @@ int main(void)
 				case APB: pin_value = (PINB & (1 << PINB3)) >> PINB3; sprintf((char*)print_buffer, "%d", pin_value); break;
 				
 				// Los que siguen son de entradas analogicas, vienen directo de los piezoelectricos.
-				case LUM1: 
+				case LUM1:
 					adc_pin_select(ADC0_PIN);
 					convert = adc_convert();
 					sprintf((char*)print_buffer, "%u", convert);
@@ -164,12 +161,11 @@ int main(void)
 			sprintf((char*)print_buffer, "MUXSET");
 		}
 		else {
-			// Enviar mensaje de Value Error
-			sprintf((char*)print_buffer, "VALERR");
+			// Hacer eco del mensaje
+			sprintf((char*)print_buffer, reading);
 		}
-
+		
 		// Enviar print_buffer
-			uart_send_string(print_buffer);
-    }
+		uart_send_string(print_buffer);
+	}
 }
-
