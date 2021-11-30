@@ -94,4 +94,6 @@ void uart_wait_read_string(uint8_t* str, uint16_t len) {
 			i++;
 		}
 	} while (i < len);
+
+	str[i] = '\0';
 }

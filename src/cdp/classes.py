@@ -276,13 +276,34 @@ class ControlUART():
         rb = self.read_bytes()
         return rb.decode('utf-8') if rb else None
 
-    def dummy_read(self, msg: str, times: int):
-        i = 0
-        while i < times:
-            self.send_bytes(msg)
-            sleep_ms(500)
-            print(self.read_bytes())
-            i += 1
+    def dummy_read_correction(self, dummy_tries: int, wait_ms: int):
+        dummy_w = "dummmy"
+        dummy_r = ""
+
+        for i in range(dummy_tries):
+            print(f"Dummy write {i}")
+            self.send_bytes(dummy_w)
+            sleep_ms(wait_ms)
+            r = self.read_bytes()
+
+            if i > 0:
+                dummy_r = r[:-1].decode('utf-8')
+
+            sleep_ms(wait_ms)
+
+        if dummy_r != dummy_w:
+            print("Corrigiendo UART...")
+
+            for i in range(len(dummy_w)):
+                if dummy_r[i:] == dummy_w[:-i]:
+                    print(f"Desfase encontrado de: {i}.")
+
+                    c = "a" * (len(dummy_w) - i)
+                    self.send_bytes(c)
+                    sleep_ms(wait_ms)
+                    print(self.read_bytes())
+
+            print("Correccion UART finalizada.")
 
     def send_and_receive(self, msg: str):
         self.send_bytes(msg)
