@@ -24,6 +24,12 @@ sensor_us = Sensor_US(16, 36)
 uart = ControlUART(9600, 17, 34)
 fsm = StateMachine()
 
+# Corregir error de lectura
+uart.dummy_read_correction(
+    dummy_tries = 2,
+    wait_ms = 1000
+)
+
 # ===== PINES ===== #
 vrx = ADC(Pin(32, Pin.IN))
 vry = ADC(Pin(33, Pin.IN))
@@ -54,27 +60,6 @@ motor_pines = {
 }
 
 # ===== LVGL ===== #
-def look_for_uart_conn():
-    tries = 0
-
-    while True:
-        uart.send_bytes('askswi')
-        sleep(0.02)
-        r = uart.read_bytes()
-
-        if r:
-            print("Done!")
-            print(r)
-            break
-
-        print("No hay lectura")
-        tries += 1
-
-        if tries > 1000:
-            reset()
-
-look_for_uart_conn()
-
 lv.init()
 display = ili9341(mosi=23, miso=19, clk=18, dc=21, cs=5, rst=22, power=-1, backlight=-1)
 
