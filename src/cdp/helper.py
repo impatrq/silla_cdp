@@ -81,7 +81,7 @@ def set_select_encoder(value: str):
             return False
         int(value)
         r = uart.send_and_receive(f"mux{value}")
-        return r == "ADDRSET"
+        return r == "MUXSET"
     except ValueError:
         print("El valor no es un numero al establecer seleccion MUX")
         return False
@@ -108,7 +108,7 @@ def save_json(data: dict):
         json.dump(data, outfile)
 
 # Mover motor hasta completar con el sensado requerido
-def move_until_finished(turn_counter: Pin, motor_pines: list, sensors_to_check: list, mux_code:str, max_position: int) -> int:
+def move_until_finished(motor, turn_counter: Pin, motor_pines: list, sensors_to_check: list, mux_code:str, max_position: int) -> int:
     """
         Mueve un motor especifico y cuenta las vueltas hasta completar su sensado. Devuelve la nueva posicion.
     """
@@ -126,7 +126,7 @@ def move_until_finished(turn_counter: Pin, motor_pines: list, sensors_to_check: 
     uart.send_bytes(f'mux{mux_code}')
 
     # Prender motores
-    for pin in motor_pines:
+    for pin in motor_pines[motor]:
         pin.value(1)
 
     i = 0
@@ -134,10 +134,14 @@ def move_until_finished(turn_counter: Pin, motor_pines: list, sensors_to_check: 
     # Actuar segun tipo de sensor asignado
     if sensor_type == "piezo":
         while True:
-            pos += turn_counter.value()
-            i += 1
-            if i == 100:
+            # pos += turn_counter.value()
+            pos += 1
+            sleep_ms(1000)
+            if pos >= 5:
                 break
+            # i += 1
+            # if i == 100:
+            #     break
             # if any(sensor_check_range(sensor, minim, maxim) for sensor, minim, maxim in sensors_to_check[1:]) or pos >= max_position:
             #     break
     elif sensor_type == "ultra":
@@ -145,15 +149,19 @@ def move_until_finished(turn_counter: Pin, motor_pines: list, sensors_to_check: 
         if sensor_us is None:
             return 0
         while True:
-            pos += turn_counter.value()
-            i += 1
-            if i == 100:
+            # pos += turn_counter.value()
+            pos += 1
+            sleep_ms(1000)
+            if pos >= 5:
                 break
+            # i += 1
+            # if i == 100:
+            #     break
             # if sensor_us.send_pulse_centimeters() > 10 or pos >= max_position:
             #     break
 
     # Apagar motores
-    for pin in motor_pines:
+    for pin in motor_pines[motor]:
         pin.value(0)
 
     # Devolver nueva posicion
@@ -175,14 +183,14 @@ def start_calibration(calibration_data: dict, turn_counter: Pin):
     # Esperar por confirmacion de inicio
     draw_calib_screen('bar')
     #wait_for_interrupt_sensor('bar')
-    sleep_ms(1000)
+    sleep_ms(3000)
 
     # Formato config => [motor_pines[], sensors[type, str, min, max], mux_code, max_pos]
     for motor, config in calibration_data.items():
         print(f"Configurando {motor}")
         draw_calib_screen(motor)
-        new_pos[motor] = move_until_finished(turn_counter, motor_pines['Adelante'], *config[1:])
-        sleep_ms(1000)
+        new_pos[motor] = move_until_finished(motor, turn_counter, motor_pines['Adelante'], *config[1:])
+        sleep_ms(5000)
 
     # Devolver dict con posiciones
     return new_pos
@@ -216,7 +224,9 @@ def setup_motors_to_position(motor_pines: dict, turn_counter: Pin, new_config: d
 
         # Contar vueltas hasta llegar a los ciclos necesarios
         while count < ciclos:
-            count += turn_counter.value()
+            # count += turn_counter.value()
+            sleep_ms(1)
+            count += 1
 
         # Apagar los motores
         for pin in motor_pines[motor]:
