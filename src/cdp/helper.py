@@ -108,7 +108,7 @@ def save_json(data: dict):
         json.dump(data, outfile)
 
 # Mover motor hasta completar con el sensado requerido
-def move_until_finished(turn_counter: Pin, motor_pines: list, sensors_to_check: list, mux_code:str, max_position: int) -> int:
+def move_until_finished(motor, turn_counter: Pin, motor_pines: list, sensors_to_check: list, mux_code:str, max_position: int) -> int:
     """
         Mueve un motor especifico y cuenta las vueltas hasta completar su sensado. Devuelve la nueva posicion.
     """
@@ -126,7 +126,7 @@ def move_until_finished(turn_counter: Pin, motor_pines: list, sensors_to_check: 
     uart.send_bytes(f'mux{mux_code}')
 
     # Prender motores
-    for pin in motor_pines:
+    for pin in motor_pines[motor]:
         pin.value(1)
 
     i = 0
@@ -161,7 +161,7 @@ def move_until_finished(turn_counter: Pin, motor_pines: list, sensors_to_check: 
             #     break
 
     # Apagar motores
-    for pin in motor_pines:
+    for pin in motor_pines[motor]:
         pin.value(0)
 
     # Devolver nueva posicion
@@ -189,7 +189,7 @@ def start_calibration(calibration_data: dict, turn_counter: Pin):
     for motor, config in calibration_data.items():
         print(f"Configurando {motor}")
         draw_calib_screen(motor)
-        new_pos[motor] = move_until_finished(turn_counter, motor_pines['Adelante'], *config[1:])
+        new_pos[motor] = move_until_finished(motor, turn_counter, motor_pines['Adelante'], *config[1:])
         sleep_ms(5000)
 
     # Devolver dict con posiciones
