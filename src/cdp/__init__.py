@@ -69,14 +69,14 @@ class Joystick:
         if r:
             r = r.split('-')
             read = int(r[0])
-            press = int(r[2][:1])
+            press = int(r[2])
             print(press, read)
             this_key = ""
 
-            if read > 954:
+            if read > 700:
                 self.next(lv.INDEV_STATE.PRESSED)
                 this_key = "right"
-            elif read < 800:
+            elif read < 50:
                 self.prev(lv.INDEV_STATE.PRESSED)
                 this_key = "left"
             elif press == 0:
