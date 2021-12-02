@@ -31,15 +31,6 @@ uart.dummy_read_correction(
 )
 
 # ===== PINES ===== #
-vrx = ADC(Pin(32, Pin.IN))
-vry = ADC(Pin(33, Pin.IN))
-sw = Pin(25, Pin.IN, Pin.PULL_UP)
-
-vrx.width(ADC.WIDTH_10BIT)
-vry.width(ADC.WIDTH_10BIT)
-vrx.atten(ADC.ATTN_11DB)
-vry.atten(ADC.ATTN_11DB)
-
 turn_counter = Pin(35, Pin.IN)
 
 motor_pines = {
@@ -78,11 +69,11 @@ class Joystick:
         if r:
             r = r.split('-')
             read = int(r[0])
-            press = int(r[2][:1])
+            press = int(r[2])
             print(press, read)
             this_key = ""
 
-            if read > 954:
+            if read > 700:
                 self.next(lv.INDEV_STATE.PRESSED)
                 this_key = "right"
             elif read < 50:

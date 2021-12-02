@@ -274,7 +274,7 @@ class ControlUART():
 
     def read_string(self) -> str:
         rb = self.read_bytes()
-        return rb.decode('utf-8') if rb else None
+        return rb[:-1].decode('utf-8') if rb else None
 
     def dummy_read_correction(self, dummy_tries: int, wait_ms: int):
         dummy_w = "dummmy"
