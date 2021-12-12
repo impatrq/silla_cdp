@@ -43,7 +43,7 @@ def draw_calib_screen(which):
 
     lv.scr_load(scr)
 
-from cdp.helper import setup_motors_to_position, sensor_check_range
+from cdp.helper import setup_motors_to_position, sensor_check_range, sensor_check_all_states
 
 with open('008-man.png', 'rb') as i:
     png_data = i.read()
@@ -129,6 +129,9 @@ def sensors_cb(event):
         for index, sensor in sensors_list:
             text = "Sensa" if sensor_check_range(sensor[1], minim=512) else "No sensa"
             labels[index].set_text(f"{sensor[0]}: {text}")
+        
+        text = "Si" if sensor_check_all_states(sensors_list[:-1]) else "No"
+        labels[-1].set_text(f"Todos los sensores: {text}")
 
 # ===== DIBUJAR PANTALLAS ===== #
 
