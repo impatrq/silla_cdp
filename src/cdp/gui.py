@@ -383,9 +383,14 @@ def draw_sensors_screen(sensors):
     labels = []
     for i, sensor in enumerate(sensors):
         h1 = lv.label(scr)
-        h1.set_pos(16, 32 * (i+1))
+        h1.set_pos(16, 16 * (i+2))
         h1.set_text(sensor[0] + ":")
         labels.append(h1)
+
+    h1 = lv.label(scr)
+    h1.set_pos(16, 16 * 8)
+    h1.set_text("Todos los sensores:")
+    labels.append(h1)
 
     btn = lv.btn(scr)
     btn.set_pos(16, 230)
