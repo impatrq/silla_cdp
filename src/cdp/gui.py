@@ -120,6 +120,9 @@ def delete_profile_cb(event, username, usericon):
 
     fsm.State = 4
 
+def sensors_cb(event):
+    pass
+
 # ===== DIBUJAR PANTALLAS ===== #
 
 def draw_edit_screen(username, usericon):
@@ -300,6 +303,15 @@ def draw_users_screen(users):
     lv.btn.add_event_cb(btn, lambda e: calibration_cb(e), lv.EVENT.PRESSED, None)
     label = lv.label(btn)
     label.set_text(lv.SYMBOL.PLUS)
+    label.center()
+    group.add_obj(btn)
+
+    btn = lv.btn(panel)
+    btn.set_size(150, 150)
+    btn.center()
+    lv.btn.add_event_cb(btn, lambda e: sensors_cb(e), lv.EVENT.PRESSED, None)
+    label = lv.label(btn)
+    label.set_text(lv.SYMBOL.EYE_OPEN + "Ver sensores")
     label.center()
     group.add_obj(btn)
 
