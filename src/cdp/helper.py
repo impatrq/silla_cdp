@@ -4,6 +4,7 @@ from machine import Pin
 from utime import sleep_ms
 from cdp import uart, sensor_us, motor_pines
 from cdp.gui import draw_calib_screen
+from cdp.classes import Usuario
 
 # ==================== SENSORES ==================== #
 
@@ -98,13 +99,13 @@ def wait_for_interrupt(pin: Pin):
 
 # Función para obtener los datos de los motores
 def load_json() -> dict:
-    with open("cdp/settings/motor_data.json", "r") as file:
+    with open(Usuario.json_motor_path, "r") as file:
         dict_motores = json.load(file)
     return dict_motores
 
 # Funcion para guardar los datos de los motores
 def save_json(data: dict):
-    with open("cdp/settings/motor_data.json", "w") as outfile:
+    with open(Usuario.json_motor_path, "w") as outfile:
         json.dump(data, outfile)
 
 # Mover motor hasta completar con el sensado requerido
