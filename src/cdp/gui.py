@@ -363,3 +363,31 @@ def draw_loading_screen():
     h.set_text("Cargando...")
 
     lv.scr_load(scr)
+
+def draw_sensors_screen(sensors):
+    group.remove_all_objs()
+
+    lv.obj.clean(scr)
+    
+    h1 = lv.label(scr)
+    h1.set_pos(96, 16)
+    h1.set_text("Sensores")
+
+    labels = []
+    for i, sensor in enumerate(sensors):
+        h1 = lv.label(scr)
+        h1.set_pos(16, 32 * (i+1))
+        h1.set_text(sensor[0] + ":")
+        labels.append(h1)
+
+    btn = lv.btn(scr)
+    btn.set_pos(16, 230)
+    btn.set_width(200)
+    lv.btn.add_event_cb(btn, users_cb, lv.EVENT.PRESSED, None)
+    label = lv.label(btn)
+    label.set_text(lv.SYMBOL.LEFT + "  Volver atras")
+    lv.group_t.add_obj(group, btn)
+
+    lv.scr_load(scr)
+
+    return labels
