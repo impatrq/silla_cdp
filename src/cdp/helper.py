@@ -4,6 +4,7 @@ from machine import Pin
 from utime import sleep_ms
 from cdp import uart, sensor_us, motor_pines
 from cdp.gui import draw_calib_screen
+from cdp.classes import Usuario
 
 # ==================== SENSORES ==================== #
 
@@ -98,13 +99,13 @@ def wait_for_interrupt(pin: Pin):
 
 # Función para obtener los datos de los motores
 def load_json() -> dict:
-    with open("cdp/settings/motor_data.json", "r") as file:
+    with open(Usuario.json_motor_path, "r") as file:
         dict_motores = json.load(file)
     return dict_motores
 
 # Funcion para guardar los datos de los motores
 def save_json(data: dict):
-    with open("cdp/settings/motor_data.json", "w") as outfile:
+    with open(Usuario.json_motor_path, "w") as outfile:
         json.dump(data, outfile)
 
 # Mover motor hasta completar con el sensado requerido
@@ -116,14 +117,12 @@ def move_until_finished(motor, turn_counter: Pin, motor_pines: list, sensors_to_
     for i in sensors_to_check:
         if len(i[1]) != 3:
             return 0
-    if len(mux_code) != 3 or uart is None:
-        return 0
 
     pos = 0
     sensor_type = sensors_to_check[0]
 
     # Setear encoder
-    uart.send_bytes(f'mux{mux_code}')
+    set_select_encoder(mux_code)
 
     # Prender motores
     for pin in motor_pines[motor]:
@@ -206,6 +205,14 @@ def setup_motors_to_position(motor_pines: dict, turn_counter: Pin, new_config: d
     if new_config is None:
         new_config = {"assheight": 0, "assdepth": 0, "lumbar": 0,"cabezal": 0, "apbrazo": 0}
 
+    encoder_values = {
+        "assheight" : "000",
+        "assdepth" : "001",
+        "lumbar" : "010",
+        "cabezal" : "011",
+        "apbrazo" : "100"
+    }
+
     # Cargar JSON para despues poder guardar las nuevas posiciones
     d = load_json()
 
@@ -217,6 +224,9 @@ def setup_motors_to_position(motor_pines: dict, turn_counter: Pin, new_config: d
             count = -(d['Actuales'][motor])
         else:
             count = 0
+
+        # Seleccionar canal de multiplexor
+        set_select_encoder(encoder_values[motor])
 
         # Prender el/los motor/es
         for pin in motor_pines[motor]:
