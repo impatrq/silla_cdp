@@ -5,7 +5,7 @@ from machine import reset
 from utime import sleep
 
 # ===== FSM STATES ===== #
-STARTING, IDLE, CALIBRATING, CALIBRATION_END, USER_SETUP = range(5)
+STARTING, IDLE, CALIBRATING, CALIBRATION_END, USER_SETUP, SENSOR_VIEWING = range(6)
 
 def wait_for_action():
     while True:
@@ -40,6 +40,14 @@ def user_setup():
     fsm.State = IDLE
     fsm.next_state()
 
+def sensor_view():
+    while True:
+        print("Reading Sensors...")
+        sleep(1)
+        if fsm.State != SENSOR_VIEWING:
+            break
+    fsm.next_state()
+
 def main():
     draw_loading_screen()
 
@@ -57,7 +65,8 @@ if __name__ == "__main__":
         (IDLE, wait_for_action),
         (CALIBRATING, do_calibration),
         (CALIBRATION_END, finish_calibration),
-        (USER_SETUP, user_setup)
+        (USER_SETUP, user_setup),
+        (SENSOR_VIEWING, sensor_view)
     ])
 
     # Arrancar la FSM
