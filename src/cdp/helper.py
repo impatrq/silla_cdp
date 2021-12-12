@@ -44,9 +44,9 @@ def sensor_check_all_states(sensors: list) -> bool:
     well_sit_cond = len(sensors)
     i = 0
 
-    # Formato(sensors) => [ident, minim, maxim]
+    # Formato(sensors) => (name, ident)
     for sensor in sensors:
-        val = sensor_check_range(sensor[0], minim=sensor[1], maxim=sensor[2])
+        val = sensor_check_range(sensor[1], minim=512)
         i += int(val)
 
     return i >= well_sit_cond

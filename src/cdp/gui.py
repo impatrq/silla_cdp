@@ -1,6 +1,6 @@
 import lvgl as lv
 import ujson as json
-from cdp import fsm, group, scr, _users_list, motor_pines, turn_counter
+from cdp import fsm, group, scr, _users_list, motor_pines, turn_counter, sensors_list
 from cdp.classes import Usuario
 from utime import sleep, sleep_ms
 import lodepng as png
@@ -43,7 +43,7 @@ def draw_calib_screen(which):
 
     lv.scr_load(scr)
 
-from cdp.helper import setup_motors_to_position
+from cdp.helper import setup_motors_to_position, sensor_check_range, sensor_check_all_states
 
 with open('008-man.png', 'rb') as i:
     png_data = i.read()
@@ -63,6 +63,7 @@ if open_png(None, dsc) == lv.RES.OK:
 # ===== CALLBACKS ===== #
 
 def users_cb(event):
+    fsm.State = 1 # IDLE
     draw_users_screen(_users_list)
 
 def calibration_cb(event):
@@ -119,6 +120,18 @@ def delete_profile_cb(event, username, usericon):
             del _users_list[i]
 
     fsm.State = 4
+
+def sensors_cb(event):
+    fsm.State = 5 # SENSOR_VIEWING
+    labels = draw_sensors_screen(sensors_list)
+
+    while fsm.State == 5:
+        for index, sensor in sensors_list:
+            text = "Sensa" if sensor_check_range(sensor[1], minim=512) else "No sensa"
+            labels[index].set_text(f"{sensor[0]}: {text}")
+        
+        text = "Si" if sensor_check_all_states(sensors_list[:-1]) else "No"
+        labels[-1].set_text(f"Todos los sensores: {text}")
 
 # ===== DIBUJAR PANTALLAS ===== #
 
@@ -303,6 +316,15 @@ def draw_users_screen(users):
     label.center()
     group.add_obj(btn)
 
+    btn = lv.btn(panel)
+    btn.set_size(150, 150)
+    btn.center()
+    lv.btn.add_event_cb(btn, lambda e: sensors_cb(e), lv.EVENT.PRESSED, None)
+    label = lv.label(btn)
+    label.set_text(lv.SYMBOL.EYE_OPEN + "Ver sensores")
+    label.center()
+    group.add_obj(btn)
+
     panel.update_snap(lv.ANIM.ON)
     lv.scr_load(scr)
 
@@ -351,3 +373,36 @@ def draw_loading_screen():
     h.set_text("Cargando...")
 
     lv.scr_load(scr)
+
+def draw_sensors_screen(sensors):
+    group.remove_all_objs()
+
+    lv.obj.clean(scr)
+    
+    h1 = lv.label(scr)
+    h1.set_pos(96, 16)
+    h1.set_text("Sensores")
+
+    labels = []
+    for i, sensor in enumerate(sensors):
+        h1 = lv.label(scr)
+        h1.set_pos(16, 16 * (i+2))
+        h1.set_text(sensor[0] + ":")
+        labels.append(h1)
+
+    h1 = lv.label(scr)
+    h1.set_pos(16, 16 * 8)
+    h1.set_text("Todos los sensores:")
+    labels.append(h1)
+
+    btn = lv.btn(scr)
+    btn.set_pos(16, 230)
+    btn.set_width(200)
+    lv.btn.add_event_cb(btn, users_cb, lv.EVENT.PRESSED, None)
+    label = lv.label(btn)
+    label.set_text(lv.SYMBOL.LEFT + "  Volver atras")
+    lv.group_t.add_obj(group, btn)
+
+    lv.scr_load(scr)
+
+    return labels
