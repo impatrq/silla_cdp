@@ -1,6 +1,6 @@
 import lvgl as lv
 import ujson as json
-from cdp import fsm, group, scr, _users_list, motor_pines, turn_counter
+from cdp import fsm, group, scr, _users_list, motor_pines, turn_counter, sensors_list
 from cdp.classes import Usuario
 from utime import sleep, sleep_ms
 import lodepng as png
@@ -43,7 +43,7 @@ def draw_calib_screen(which):
 
     lv.scr_load(scr)
 
-from cdp.helper import setup_motors_to_position
+from cdp.helper import setup_motors_to_position, sensor_check_range
 
 with open('008-man.png', 'rb') as i:
     png_data = i.read()
@@ -63,6 +63,7 @@ if open_png(None, dsc) == lv.RES.OK:
 # ===== CALLBACKS ===== #
 
 def users_cb(event):
+    fsm.State = 1 # IDLE
     draw_users_screen(_users_list)
 
 def calibration_cb(event):
@@ -121,7 +122,13 @@ def delete_profile_cb(event, username, usericon):
     fsm.State = 4
 
 def sensors_cb(event):
-    pass
+    fsm.State = 5 # SENSOR_VIEWING
+    labels = draw_sensors_screen(sensors_list)
+
+    while fsm.State == 5:
+        for index, sensor in sensors_list:
+            text = "Sensa" if sensor_check_range(sensor[1], minim=512) else "No sensa"
+            labels[index].set_text(f"{sensor[0]}: {text}")
 
 # ===== DIBUJAR PANTALLAS ===== #
 
