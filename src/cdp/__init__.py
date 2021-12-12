@@ -50,6 +50,15 @@ motor_pines = {
     }
 }
 
+sensors_list = [
+    ("Lumbar 1", "lu1"),
+    ("Lumbar 2", "lu2"),
+    ("Asiento 1", "as1"),
+    ("Asiento 2", "as2"),
+    ("Ap. Brazo", "apb")
+    ("Barra", "bar")
+]
+
 # ===== LVGL ===== #
 lv.init()
 display = ili9341(mosi=23, miso=19, clk=18, dc=21, cs=5, rst=22, power=-1, backlight=-1)
